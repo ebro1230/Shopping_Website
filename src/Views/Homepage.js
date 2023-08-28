@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import axios from "axios";
 
 import Item from "../Components/Item";
 import shopping_cart from "../Images/shopping-cart.png";
@@ -13,32 +14,14 @@ const HomePage = () => {
   console.log(items);
 
   useEffect(() => {
-    setItems([
-      {
-        number: 1,
-        cardImage: shopping_cart,
-        cardTitle: `This is my Title 1`,
-        cardText: "This is my text",
-      },
-      {
-        number: 2,
-        cardImage: shopping_cart,
-        cardTitle: `This is my Title 2`,
-        cardText: "This is my text",
-      },
-      {
-        number: 3,
-        cardImage: shopping_cart,
-        cardTitle: `This is my Title 3`,
-        cardText: "This is my text",
-      },
-      {
-        number: 4,
-        cardImage: shopping_cart,
-        cardTitle: `This is my Title 4`,
-        cardText: "This is my text",
-      },
-    ]);
+    axios
+      .get(`https://fakestoreapi.com/products`)
+      .then((response) => {
+        setItems(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (
@@ -50,11 +33,11 @@ const HomePage = () => {
       ) : items.length ? (
         <Row xs={1} md={2} lg={3} xl={4} className="g-4">
           {items.map((item) => (
-            <Col key={item.number}>
+            <Col key={item.id}>
               <Item
-                cardImage={item.cardImage}
-                cardTitle={item.cardTitle}
-                cardText={item.cardText}
+                cardImage={item.image}
+                cardTitle={item.title}
+                cardText={item.description}
               />
             </Col>
           ))}
