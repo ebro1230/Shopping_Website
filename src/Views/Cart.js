@@ -13,10 +13,11 @@ const Cart = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
   const location = useLocation();
-  const { oldCart } = location.state;
-  console.log(cart);
+
   useEffect(() => {
-    setCart(oldCart.cart);
+    if (location.state) {
+      setCart(location.state.oldCart.cart);
+    }
   }, []);
   const handleOnPlus = (e) => {
     e.preventDefault();
