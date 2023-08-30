@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarF } from "@fortawesome/free-solid-svg-icons";
 import { faStar as faStarE } from "@fortawesome/free-regular-svg-icons";
 
-const Item = (props) => {
+const CartItem = (props) => {
   const cardImage = props.cardImage;
   const cardTitle = props.cardTitle;
   const cardRating = Number(props.cardRating);
@@ -64,23 +64,19 @@ const Item = (props) => {
             +
           </Button>
         </div>
-        {cardQuantity > 0 ? (
-          <div className="addToCart-div">
-            <div>
-              <p>Total Price: ${totalPrice}</p>
-            </div>
-            <Button
-              id={cardId}
-              data-quantity={cardQuantity}
-              onClick={props.onAddToCart}
-            >
-              Add to Cart
-            </Button>
-          </div>
-        ) : null}
+
+        <div className="addToCart-div">
+          <Button
+            id={cardId}
+            data-quantity={cardQuantity}
+            onClick={props.onUpdate}
+          >
+            Update Cart
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );
 };
 
-export default Item;
+export default CartItem;

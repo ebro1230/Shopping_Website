@@ -71,3 +71,16 @@ code {
 .addToCart-div p {
   margin: 1rem;
 }
+.shoppingCart-div{
+  width:3rem;
+  display:flex;
+  height:100%;
+}
+.navItem{
+  height:100%;
+  margin-top:0.15rem;
+}
+.shoppingCartCount-div{
+  margin:-0.8rem;
+  height:1.4rem;
+}

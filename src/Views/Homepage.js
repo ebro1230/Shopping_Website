@@ -3,15 +3,17 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 import Item from "../Components/Item";
 import LoadingIndicator from "../Components/LoadingIndicator";
-import shopping_cart from "../Images/shopping-cart.png";
+import CustomNav from "../Components/CustomNav";
 
 const HomePage = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const location = useLocation();
 
   const handleOnPlus = (e) => {
     e.preventDefault();
@@ -123,6 +125,10 @@ const HomePage = () => {
             });
           })
         );
+        if (location.state) {
+          const { oldCart } = location.state;
+          setCart(oldCart.cart);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -133,34 +139,37 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="items-container">
-      {isLoading ? (
-        <div>
-          <LoadingIndicator />
-        </div>
-      ) : items.length ? (
-        <Row xs={1} md={2} lg={3} xl={4} className="g-4">
-          {items.map((item) => (
-            <Col key={item.id}>
-              <Item
-                cardImage={item.image}
-                cardTitle={item.title}
-                cardRating={item.rating.rate}
-                cardPrice={item.price}
-                cardText={item.description}
-                cardQuantity={item.quantity}
-                cardId={item.id}
-                onPlus={handleOnPlus}
-                onMinus={handleOnMinus}
-                onAddToCart={handleOnAddToCart}
-              />
-            </Col>
-          ))}
-        </Row>
-      ) : (
-        <p>No Items Available</p>
-      )}
-    </div>
+    <>
+      <CustomNav cart={cart} />
+      <div className="items-container">
+        {isLoading ? (
+          <div>
+            <LoadingIndicator />
+          </div>
+        ) : items.length ? (
+          <Row xs={1} md={2} lg={3} xl={4} className="g-4">
+            {items.map((item) => (
+              <Col key={item.id}>
+                <Item
+                  cardImage={item.image}
+                  cardTitle={item.title}
+                  cardRating={item.rating.rate}
+                  cardPrice={item.price}
+                  cardText={item.description}
+                  cardQuantity={item.quantity}
+                  cardId={item.id}
+                  onPlus={handleOnPlus}
+                  onMinus={handleOnMinus}
+                  onAddToCart={handleOnAddToCart}
+                />
+              </Col>
+            ))}
+          </Row>
+        ) : (
+          <p>No Items Available</p>
+        )}
+      </div>
+    </>
   );
 };
 
