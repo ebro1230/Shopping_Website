@@ -54,7 +54,7 @@ const Item = (props) => {
           />
         </div>
         <h3 className="card-price">${cardPrice}</h3>
-        <Card.Text>{cardText}</Card.Text>
+        <Card.Text className="itemText-div">{cardText}</Card.Text>
         <div className="quantity-div">
           <Button id={cardId} onClick={props.onMinus}>
             -

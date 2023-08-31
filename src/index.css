@@ -33,7 +33,7 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.card-text{
+.itemText-div{
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -83,4 +83,28 @@ code {
 .shoppingCartCount-div{
   margin:-0.8rem;
   height:1.4rem;
+}
+.cartItemCard-div{
+  display:flex;
+}
+.cartParts-div{
+  display:flex;
+  flex-direction: column;
+}
+.cartQuantity-div{
+  display: flex;
+  justify-content: center;
+}
+.cartRatingAndDescription-div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center
+}
+.cartItemTitle-div{
+  display: flex;
+  justify-content: center;
+}
+.updateButton-div{
+  display:flex;
+  justify-content: flex-end;
 }
