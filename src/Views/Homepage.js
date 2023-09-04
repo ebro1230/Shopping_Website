@@ -25,6 +25,7 @@ const HomePage = () => {
             category: item.category,
             description: item.description,
             id: item.id,
+            itemId: item.id,
             image: item.image,
             price: item.price,
             rating: item.rating,
@@ -48,6 +49,7 @@ const HomePage = () => {
             category: item.category,
             description: item.description,
             id: item.id,
+            itemId: item.id,
             image: item.image,
             price: item.price,
             rating: item.rating,
@@ -60,7 +62,6 @@ const HomePage = () => {
       })
     );
   };
-
   const handleOnAddToCart = (e) => {
     e.preventDefault();
     const itemId = e.target.id;
@@ -76,6 +77,7 @@ const HomePage = () => {
                       category: cartItem.category,
                       description: cartItem.description,
                       id: cartItem.id,
+                      itemId: cartItem.id,
                       image: cartItem.image,
                       price: cartItem.price,
                       rating: cartItem.rating,
@@ -93,6 +95,7 @@ const HomePage = () => {
             category: item.category,
             description: item.description,
             id: item.id,
+            itemId: item.id,
             image: item.image,
             price: item.price,
             rating: item.rating,
@@ -117,6 +120,7 @@ const HomePage = () => {
               category: item.category,
               description: item.description,
               id: item.id,
+              itemId: item.id,
               image: item.image,
               price: item.price.toFixed(2),
               rating: item.rating,
@@ -158,6 +162,7 @@ const HomePage = () => {
                   cardText={item.description}
                   cardQuantity={item.quantity}
                   cardId={item.id}
+                  cardItemId={item.itemId}
                   onPlus={handleOnPlus}
                   onMinus={handleOnMinus}
                   onAddToCart={handleOnAddToCart}

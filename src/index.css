@@ -108,3 +108,30 @@ code {
   display:flex;
   justify-content: flex-end;
 }
+
+.cartButtons-div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+  margin-top: 3rem
+}
+
+.cartButton{
+  margin: 0.2rem;
+}
+
+.cartTitle-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.2rem;
+  text-decoration: underline;
+}
+
+.cartPrice-div{
+  display: flex;
+  justify-content: center;
+  margin: 0.2rem;
+}

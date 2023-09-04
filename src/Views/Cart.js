@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import CartItem from "../Components/CartItem";
 import LoadingIndicator from "../Components/LoadingIndicator";
@@ -16,27 +16,49 @@ const Cart = () => {
   const [cart, setCart] = useState([]);
   const [oldCart, setOldCart] = useState([]);
   const [cartPrice, setCartPrice] = useState(0);
+  const [newCartPrice, setNewCartPrice] = useState(0);
+  const [quantityChange, setQuantityChange] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state) {
       setCart(location.state.oldCart.cart);
+      setOldCart(location.state.oldCart.cart);
+      let price = 0;
       location.state.oldCart.cart.forEach((item) => {
-        setCartPrice(cartPrice + item.quantity * item.price);
+        console.log(cartPrice);
+        price = price + Number(item.quantity) * Number(item.price);
       });
+      setCartPrice(price);
+      setNewCartPrice(price);
     }
   }, []);
 
   const handleOnPlus = (e) => {
     e.preventDefault();
+    let price = Number(newCartPrice);
     const increaseId = e.target.id;
+    const increaseQuantity = Number(e.target.getAttribute("data-quantity")) + 1;
+    oldCart.forEach((item) => {
+      if (Number(item.itemId) === Number(increaseId)) {
+        price = Number(price) + Number(item.price);
+        if (item.quantity != increaseQuantity) {
+          setQuantityChange(true);
+        } else {
+          setQuantityChange(false);
+        }
+      }
+    });
+    setNewCartPrice(price);
     setCart(
       cart.map((item) => {
-        if (Number(item.id) === Number(increaseId)) {
+        if (Number(item.itemId) === Number(increaseId)) {
           return (item = {
             category: item.category,
             description: item.description,
             id: item.id,
+            itemId: item.itemId,
             image: item.image,
             price: item.price,
             rating: item.rating,
@@ -53,13 +75,30 @@ const Cart = () => {
   const handleOnMinus = (e) => {
     e.preventDefault();
     const decreaseId = e.target.id;
+    let price = newCartPrice;
+    console.log(decreaseId);
+    const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
+    oldCart.forEach((item) => {
+      if (Number(item.itemId) === Number(decreaseId)) {
+        if (item.quantity != 0) {
+          price = Number(price) - Number(item.price);
+        }
+        if (item.quantity != decreaseQuantity) {
+          setQuantityChange(true);
+        } else {
+          setQuantityChange(false);
+        }
+      }
+    });
+    setNewCartPrice(Number(price));
     setCart(
       cart.map((item) => {
-        if (Number(item.id) === Number(decreaseId)) {
+        if (Number(item.itemId) === Number(decreaseId)) {
           return (item = {
             category: item.category,
             description: item.description,
             id: item.id,
+            itemId: item.itemId,
             image: item.image,
             price: item.price,
             rating: item.rating,
@@ -73,6 +112,10 @@ const Cart = () => {
     );
   };
 
+  const handleReturntoShopping = (e) => {
+    e.preventDefault();
+    navigate("/", { state: { oldCart: { cart } } });
+  };
   const handleUpdate = (e) => {
     e.preventDefault();
     setCart(
@@ -85,9 +128,9 @@ const Cart = () => {
         return item.quantity > 0;
       })
     );
-    cart.forEach((item) => {
-      setCartPrice(cartPrice + item.quantity * item.price);
-    });
+    setCartPrice(newCartPrice);
+
+    setQuantityChange(false);
   };
 
   const handleProceedToCheckOut = (e) => {
@@ -127,6 +170,7 @@ const Cart = () => {
                   oldCart={oldCart}
                   cart={cart}
                   onUpdate={handleUpdate}
+                  quantityChange={quantityChange}
                 />
               </Col>
               <Col xs={3}></Col>
@@ -148,6 +192,7 @@ const Cart = () => {
                         }).quantity
                       }
                       cardId={item.id}
+                      cardItemId={item.itemId}
                       onPlus={handleOnPlus}
                       onMinus={handleOnMinus}
                     />
@@ -159,12 +204,26 @@ const Cart = () => {
                   cartPrice={cartPrice}
                   onProceedToCheckOut={handleProceedToCheckOut}
                   onEmptyCart={handleEmptyCart}
+                  onReturn={handleReturntoShopping}
                 />
               </Col>
             </Row>
           </>
         ) : (
-          <p>No Items In Cart</p>
+          <Row>
+            <Col xs={9}>
+              <p>No Items In Cart</p>
+            </Col>
+
+            <Col xs={3}>
+              <ProceedToCheckOut
+                cartPrice={cartPrice}
+                onProceedToCheckOut={handleProceedToCheckOut}
+                onEmptyCart={handleEmptyCart}
+                onReturn={handleReturntoShopping}
+              />
+            </Col>
+          </Row>
         )}
       </div>
     </>

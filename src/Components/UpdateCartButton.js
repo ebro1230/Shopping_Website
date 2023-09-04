@@ -1,16 +1,17 @@
 import Button from "react-bootstrap/Button";
+import React, { useState, useEffect } from "react";
 
 const UpdateCartButton = (props) => {
-  const oldCart = props.oldCart;
-  const cart = props.cart;
-  const quantityChange = 0;
+  const quantityChange = props.quantityChange;
 
   return (
     <div className="updateButton-div">
       {quantityChange ? (
-        <Button>Update Cart</Button>
+        <Button variant="primary" onClick={props.onUpdate}>
+          Update Cart
+        </Button>
       ) : (
-        <Button onClick={props.handleUpdate}>Update Cart</Button>
+        <Button variant="secondary">Update Cart</Button>
       )}
     </div>
   );

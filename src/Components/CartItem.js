@@ -17,11 +17,12 @@ const CartItem = (props) => {
   const cardText = props.cardText;
   const cardId = props.cardId;
   const cardQuantity = props.cardQuantity;
+  const cardItemId = props.cardItemId;
   const cardOldQuantity = props.cardOldQuantity;
   const totalPrice = (cardQuantity * cardPrice).toFixed(2);
 
   return (
-    <Card>
+    <Card key={cardItemId}>
       <Card.Body className="cartItemCard-div">
         <Row>
           <Col>
@@ -72,11 +73,19 @@ const CartItem = (props) => {
           </Col>
           <Col className="cartQuantity-div">
             <div className="quantity-div">
-              <Button id={cardId} onClick={props.onMinus}>
+              <Button
+                id={cardItemId}
+                onClick={props.onMinus}
+                data-quantity={cardQuantity}
+              >
                 -
               </Button>
               <p>Quantity: {cardQuantity}</p>
-              <Button id={cardId} onClick={props.onPlus}>
+              <Button
+                id={cardItemId}
+                onClick={props.onPlus}
+                data-quantity={cardQuantity}
+              >
                 +
               </Button>
             </div>
