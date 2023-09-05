@@ -36,16 +36,28 @@ function CustomNav(props) {
                 <LinkContainer to="/" state={{ oldCart: { cart } }}>
                   <Nav.Link className="navItem">Home</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/" state={{ oldCart: { cart } }}>
+                <LinkContainer
+                  to="/category/electronics"
+                  state={{ oldCart: { cart } }}
+                >
                   <Nav.Link className="navItem">Electronics</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/" state={{ oldCart: { cart } }}>
-                  <Nav.Link className="navItem">Jewelry</Nav.Link>
+                <LinkContainer
+                  to="/category/jewelery"
+                  state={{ oldCart: { cart } }}
+                >
+                  <Nav.Link className="navItem">Jewelery</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/" state={{ oldCart: { cart } }}>
+                <LinkContainer
+                  to="/category/men's clothing"
+                  state={{ oldCart: { cart } }}
+                >
                   <Nav.Link className="navItem">Men's Clothing</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/" state={{ oldCart: { cart } }}>
+                <LinkContainer
+                  to="/category/women's clothing"
+                  state={{ oldCart: { cart } }}
+                >
                   <Nav.Link className="navItem">Women's Clothing</Nav.Link>
                 </LinkContainer>
                 <LinkContainer to="/cart" state={{ oldCart: { cart } }}>

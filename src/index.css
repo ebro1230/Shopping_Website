@@ -75,7 +75,7 @@ code {
 }
 .shoppingCart-div{
   width:3rem;
-  display:flex;
+  display:flex !important;
   height:100%;
 }
 .navItem{
@@ -83,7 +83,7 @@ code {
   margin-top:0.15rem;
 }
 .shoppingCartCount-div{
-  margin:-0.8rem;
+  margin:-0.7rem;
   height:1.4rem;
 }
 .cartItemCard-div{
@@ -138,4 +138,18 @@ code {
   display: flex;
   justify-content: center;
   margin: 0.2rem;
+}
+.loading-div{
+  margin: 7rem;
+}
+
+.noItemsTitle-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.noItemsBody-div{
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }

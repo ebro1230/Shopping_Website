@@ -13,7 +13,7 @@ export default function LoadingIndicator() {
       }}
     >
       <RotatingLines
-        strokeColor="ivory"
+        strokeColor="green"
         strokeWidth="5"
         animationDuration="0.75"
         width="96"

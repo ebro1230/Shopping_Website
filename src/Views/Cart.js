@@ -159,7 +159,7 @@ const Cart = () => {
       <CustomNav cart={cart} />
       <div className="items-container">
         {isLoading ? (
-          <div>
+          <div className="loading-div">
             <LoadingIndicator />
           </div>
         ) : cart.length ? (
@@ -212,7 +212,13 @@ const Cart = () => {
         ) : (
           <Row>
             <Col xs={9}>
-              <p>No Items In Cart</p>
+              <Card>
+                <Card.Body className="noItemsBody-div">
+                  <Card.Title className="noItems-div">
+                    No Items In Cart
+                  </Card.Title>
+                </Card.Body>
+              </Card>
             </Col>
 
             <Col xs={3}>

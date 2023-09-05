@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { useParams } from "react-router";
 
 import Item from "../Components/Item";
 import LoadingIndicator from "../Components/LoadingIndicator";
@@ -14,6 +15,7 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
   const location = useLocation();
+  let { category } = useParams();
 
   const handleOnPlus = (e) => {
     e.preventDefault();
@@ -112,7 +114,7 @@ const HomePage = () => {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`https://fakestoreapi.com/products`)
+      .get(`https://fakestoreapi.com/products/category/${category}`)
       .then((response) => {
         setItems(
           response.data.map((item) => {
@@ -140,7 +142,7 @@ const HomePage = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [category]);
 
   return (
     <>
