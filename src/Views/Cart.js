@@ -27,7 +27,6 @@ const Cart = () => {
       setOldCart(location.state.oldCart.cart);
       let price = 0;
       location.state.oldCart.cart.forEach((item) => {
-        console.log(cartPrice);
         price = price + Number(item.quantity) * Number(item.price);
       });
       setCartPrice(price);
@@ -38,18 +37,34 @@ const Cart = () => {
   const handleOnPlus = (e) => {
     e.preventDefault();
     let price = Number(newCartPrice);
+    let difference = [];
     const increaseId = e.target.id;
     const increaseQuantity = Number(e.target.getAttribute("data-quantity")) + 1;
-    oldCart.forEach((item) => {
-      if (Number(item.itemId) === Number(increaseId)) {
-        price = Number(price) + Number(item.price);
-        if (item.quantity != increaseQuantity) {
-          setQuantityChange(true);
-        } else {
-          setQuantityChange(false);
-        }
+    oldCart.forEach((oldItem) => {
+      if (Number(oldItem.itemId) === Number(increaseId)) {
+        price = Number(price) + Number(oldItem.price);
+        // if (item.quantity != increaseQuantity) {
+        //   setQuantityChange(true);
+        // } else {
+        //   setQuantityChange(false);
+        // }
       }
     });
+    for (let i = 0; i < cart.length; i++) {
+      if (Number(cart[i].itemId) === Number(increaseId)) {
+        if (Number(cart[i].quantity + 1) != Number(oldCart[i].quantity)) {
+          difference = [difference, true];
+          console.log(cart[i].quantity + 1);
+          console.log(oldCart[i].quantity);
+        }
+      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+        difference = [...difference, true];
+      } else {
+        difference = [...difference, false];
+      }
+    }
+    setQuantityChange(difference.includes(true));
+    setQuantityChange(difference.includes(true));
     setNewCartPrice(price);
     setCart(
       cart.map((item) => {
@@ -75,21 +90,35 @@ const Cart = () => {
   const handleOnMinus = (e) => {
     e.preventDefault();
     const decreaseId = e.target.id;
+    let difference = [];
     let price = newCartPrice;
-    console.log(decreaseId);
     const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
-    oldCart.forEach((item) => {
-      if (Number(item.itemId) === Number(decreaseId)) {
-        if (item.quantity != 0) {
-          price = Number(price) - Number(item.price);
+    oldCart.forEach((oldItem) => {
+      if (Number(oldItem.itemId) === Number(decreaseId)) {
+        if (cart.find((item) => item.itemId === oldItem.itemId).quantity != 0) {
+          price = Number(price) - Number(oldItem.price);
         }
-        if (item.quantity != decreaseQuantity) {
-          setQuantityChange(true);
-        } else {
-          setQuantityChange(false);
-        }
+        // if (item.quantity != decreaseQuantity) {
+        //   setQuantityChange(true);
+        // } else {
+        //   setQuantityChange(false);
+        // }
       }
     });
+    for (let i = 0; i < cart.length; i++) {
+      if (Number(cart[i].itemId) === Number(decreaseId)) {
+        if (Number(cart[i].quantity - 1) != Number(oldCart[i].quantity)) {
+          difference = [difference, true];
+          console.log(cart[i].quantity - 1);
+          console.log(oldCart[i].quantity);
+        }
+      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+        difference = [...difference, true];
+      } else {
+        difference = [...difference, false];
+      }
+    }
+    setQuantityChange(difference.includes(true));
     setNewCartPrice(Number(price));
     setCart(
       cart.map((item) => {
