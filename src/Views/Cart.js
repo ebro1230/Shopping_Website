@@ -55,14 +55,16 @@ const Cart = () => {
       cart.map((item) => {
         if (Number(item.itemId) === Number(increaseId)) {
           return (item = {
-            category: item.category,
-            description: item.description,
             id: item.id,
-            itemId: item.itemId,
-            image: item.image,
-            price: item.price,
-            rating: item.rating,
+            itemId: item.id,
             title: item.title,
+            description: item.description,
+            price: Number(item.price).toFixed(2),
+            rating: item.rating,
+            brand: item.brand,
+            category: item.category,
+            image: item.image,
+            productImages: item.productImages,
             quantity: item.quantity + 1,
           });
         } else {
@@ -95,14 +97,16 @@ const Cart = () => {
       cart.map((item) => {
         if (Number(item.itemId) === Number(decreaseId)) {
           return (item = {
-            category: item.category,
-            description: item.description,
             id: item.id,
-            itemId: item.itemId,
-            image: item.image,
-            price: item.price,
-            rating: item.rating,
+            itemId: item.id,
             title: item.title,
+            description: item.description,
+            price: Number(item.price).toFixed(2),
+            rating: item.rating,
+            brand: item.brand,
+            category: item.category,
+            image: item.image,
+            productImages: item.productImages,
             quantity: item.quantity === 0 ? 0 : item.quantity - 1,
           });
         } else {
@@ -182,7 +186,7 @@ const Cart = () => {
                     <CartItem
                       cardImage={item.image}
                       cardTitle={item.title}
-                      cardRating={item.rating.rate}
+                      cardRating={item.rating}
                       cardPrice={item.price}
                       cardText={item.description}
                       cardQuantity={item.quantity}
@@ -214,7 +218,7 @@ const Cart = () => {
             <Col xs={9}>
               <Card>
                 <Card.Body className="noItemsBody-div">
-                  <Card.Title className="noItems-div">
+                  <Card.Title className="noItemsTitle-div">
                     No Items In Cart
                   </Card.Title>
                 </Card.Body>

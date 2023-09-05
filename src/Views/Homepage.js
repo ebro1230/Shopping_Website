@@ -15,6 +15,7 @@ const HomePage = () => {
   const [cart, setCart] = useState([]);
   const location = useLocation();
 
+  console.log(items);
   const handleOnPlus = (e) => {
     e.preventDefault();
     const increaseId = e.target.id;
@@ -22,14 +23,16 @@ const HomePage = () => {
       items.map((item) => {
         if (Number(item.id) === Number(increaseId)) {
           return (item = {
-            category: item.category,
-            description: item.description,
             id: item.id,
             itemId: item.id,
-            image: item.image,
-            price: item.price,
-            rating: item.rating,
             title: item.title,
+            description: item.description,
+            price: Number(item.price).toFixed(2),
+            rating: item.rating,
+            brand: item.brand,
+            category: item.category,
+            image: item.image,
+            productImages: item.productImages,
             quantity: item.quantity + 1,
           });
         } else {
@@ -46,14 +49,16 @@ const HomePage = () => {
       items.map((item) => {
         if (Number(item.id) === Number(decreaseId)) {
           return (item = {
-            category: item.category,
-            description: item.description,
             id: item.id,
             itemId: item.id,
-            image: item.image,
-            price: item.price,
-            rating: item.rating,
             title: item.title,
+            description: item.description,
+            price: Number(item.price).toFixed(2),
+            rating: item.rating,
+            brand: item.brand,
+            category: item.category,
+            image: item.image,
+            productImages: item.productImages,
             quantity: item.quantity === 0 ? 0 : item.quantity - 1,
           });
         } else {
@@ -74,14 +79,16 @@ const HomePage = () => {
               ? cart.map((cartItem) => {
                   if (Number(cartItem.id) === Number(item.id)) {
                     return (cartItem = {
-                      category: cartItem.category,
-                      description: cartItem.description,
                       id: cartItem.id,
                       itemId: cartItem.id,
-                      image: cartItem.image,
-                      price: cartItem.price,
-                      rating: cartItem.rating,
                       title: cartItem.title,
+                      description: cartItem.description,
+                      price: Number(item.price).toFixed(2),
+                      rating: cartItem.rating,
+                      brand: cartItem.brand,
+                      category: cartItem.category,
+                      image: cartItem.image,
+                      productImages: cartItem.productImages,
                       quantity:
                         Number(cartItem.quantity) + Number(itemQuantity),
                     });
@@ -92,14 +99,16 @@ const HomePage = () => {
               : [...cart, item]
           );
           return (item = {
-            category: item.category,
-            description: item.description,
             id: item.id,
             itemId: item.id,
-            image: item.image,
-            price: item.price,
-            rating: item.rating,
             title: item.title,
+            description: item.description,
+            price: Number(item.price).toFixed(2),
+            rating: item.rating,
+            brand: item.brand,
+            category: item.category,
+            image: item.image,
+            productImages: item.productImages,
             quantity: 0,
           });
         } else {
@@ -112,19 +121,22 @@ const HomePage = () => {
   useEffect(() => {
     setIsLoading(true);
     axios
-      .get(`https://fakestoreapi.com/products`)
+      .get(`https://dummyjson.com/products`)
       .then((response) => {
+        console.log(response);
         setItems(
-          response.data.map((item) => {
+          response.data.products.map((item) => {
             return (item = {
-              category: item.category,
-              description: item.description,
               id: item.id,
               itemId: item.id,
-              image: item.image,
-              price: item.price.toFixed(2),
-              rating: item.rating,
               title: item.title,
+              description: item.description,
+              price: Number(item.price).toFixed(2),
+              rating: Number(item.rating),
+              brand: item.brand,
+              category: item.category,
+              image: item.thumbnail,
+              productImages: item.images,
               quantity: 0,
             });
           })
@@ -157,7 +169,7 @@ const HomePage = () => {
                 <Item
                   cardImage={item.image}
                   cardTitle={item.title}
-                  cardRating={item.rating.rate}
+                  cardRating={item.rating}
                   cardPrice={item.price}
                   cardText={item.description}
                   cardQuantity={item.quantity}
