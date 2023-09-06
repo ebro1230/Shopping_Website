@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import HomePage from "./Views/Homepage";
 import Cart from "./Views/Cart";
-import Product from "./Views/Product";
+import ProductPage from "./Views/ProductPage";
 import CheckOut from "./Views/CheckOut";
 import Category from "./Views/Category";
 
@@ -14,7 +14,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/category/:category" element={<Category />} />
-        <Route path="/product/:productId" element={<Product />} />
+        <Route path="/product/:productId" element={<ProductPage />} />
         <Route path="/checkout" element={<CheckOut />} />
       </Routes>
     </>

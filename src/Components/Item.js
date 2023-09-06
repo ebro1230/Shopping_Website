@@ -15,13 +15,21 @@ const Item = (props) => {
   const cardText = props.cardText;
   const cardId = props.cardId;
   const cardQuantity = props.cardQuantity;
+  const cardItemId = props.cardItemId;
   const totalPrice = (cardQuantity * cardPrice).toFixed(2);
 
   return (
-    <Card>
-      <Card.Img variant="top" src={cardImage} />
+    <Card key={cardItemId}>
+      <Card.Img
+        variant="top"
+        src={cardImage}
+        data-itemid={cardItemId}
+        onClick={props.onItemClick}
+      />
       <Card.Body>
-        <Card.Title>{cardTitle}</Card.Title>
+        <Card.Title data-itemid={cardItemId} onClick={props.onItemClick}>
+          {cardTitle}
+        </Card.Title>
         <div className="card-rating">
           <Rating
             emptySymbol={

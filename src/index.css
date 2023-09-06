@@ -23,6 +23,14 @@ code {
   object-fit: contain;
   padding: 1.5rem;
   min-height: 200px;
+  cursor: pointer;
+}
+.productImg-div{
+  width: 100%;
+  height: 25vw;
+  object-fit: contain;
+  padding: 1.5rem;
+  min-height: 200px;
 }
 
 .card-title{
@@ -33,6 +41,7 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
+  cursor:pointer;
 }
 .itemText-div{
   display: -webkit-box;
@@ -121,6 +130,13 @@ code {
   height: auto;
   margin-top: 3rem
 }
+.productCartButtons-div{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: auto;
+}
 
 .cartButton{
   margin: 0.2rem;
@@ -151,5 +167,31 @@ code {
 .noItemsBody-div{
   align-items: center;
   display: flex;
+  justify-content: center;
+}
+.productCard-div{
+  display:flex;
+  justify-content: space-around;
+}
+.productRatingAndDescription-div{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  padding-right: 4rem;
+}
+.productPage-div{
+  display: flex;
+}
+.product-div{
+  margin: 1rem 0.5rem 1rem 1rem;
+}
+.productCart-div{
+  margin: 1rem 1rem 1rem 0.5rem;
+}
+.addToCheckOut-div{
+  width:100%;
+  display:flex;
+  flex-direction: column;
   justify-content: center;
 }

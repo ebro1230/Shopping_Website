@@ -19,7 +19,9 @@ function CustomNav(props) {
         data-bs-theme="dark"
       >
         <Container fluid>
-          <Navbar.Brand href="#">Generic Store</Navbar.Brand>
+          <LinkContainer to="/" state={{ oldCart: { cart } }}>
+            <Navbar.Brand>Generic Store</Navbar.Brand>
+          </LinkContainer>
           <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} />
           <Navbar.Offcanvas
             id={`offcanvasNavbar-expand-md`}

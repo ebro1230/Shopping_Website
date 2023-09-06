@@ -4,6 +4,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Item from "../Components/Item";
 import LoadingIndicator from "../Components/LoadingIndicator";
@@ -14,6 +15,7 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleOnPlus = (e) => {
     e.preventDefault();
@@ -109,6 +111,12 @@ const HomePage = () => {
     );
   };
 
+  const handleItemClick = (e) => {
+    e.preventDefault();
+    const productId = Number(e.target.getAttribute("data-itemid"));
+    navigate(`product/${productId}`, { state: { oldCart: { cart } } });
+  };
+
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -166,6 +174,7 @@ const HomePage = () => {
                   onPlus={handleOnPlus}
                   onMinus={handleOnMinus}
                   onAddToCart={handleOnAddToCart}
+                  onItemClick={handleItemClick}
                 />
               </Col>
             ))}
