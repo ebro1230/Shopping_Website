@@ -43,19 +43,12 @@ const Cart = () => {
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(increaseId)) {
         price = Number(price) + Number(oldItem.price);
-        // if (item.quantity != increaseQuantity) {
-        //   setQuantityChange(true);
-        // } else {
-        //   setQuantityChange(false);
-        // }
       }
     });
     for (let i = 0; i < cart.length; i++) {
       if (Number(cart[i].itemId) === Number(increaseId)) {
         if (Number(cart[i].quantity + 1) != Number(oldCart[i].quantity)) {
           difference = [difference, true];
-          console.log(cart[i].quantity + 1);
-          console.log(oldCart[i].quantity);
         }
       } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
         difference = [...difference, true];
@@ -98,19 +91,12 @@ const Cart = () => {
         if (cart.find((item) => item.itemId === oldItem.itemId).quantity != 0) {
           price = Number(price) - Number(oldItem.price);
         }
-        // if (item.quantity != decreaseQuantity) {
-        //   setQuantityChange(true);
-        // } else {
-        //   setQuantityChange(false);
-        // }
       }
     });
     for (let i = 0; i < cart.length; i++) {
       if (Number(cart[i].itemId) === Number(decreaseId)) {
         if (Number(cart[i].quantity - 1) != Number(oldCart[i].quantity)) {
           difference = [difference, true];
-          console.log(cart[i].quantity - 1);
-          console.log(oldCart[i].quantity);
         }
       } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
         difference = [...difference, true];
@@ -145,6 +131,7 @@ const Cart = () => {
     e.preventDefault();
     navigate("/", { state: { oldCart: { cart } } });
   };
+
   const handleUpdate = (e) => {
     e.preventDefault();
     setCart(
@@ -164,16 +151,17 @@ const Cart = () => {
 
   const handleProceedToCheckOut = (e) => {
     e.preventDefault();
-    setCart(
-      cart.filter((item) => {
-        return item.quantity > 0;
-      })
-    );
-    setOldCart(
-      cart.filter((item) => {
-        return item.quantity > 0;
-      })
-    );
+    // setCart(
+    //   cart.filter((item) => {
+    //     return item.quantity > 0;
+    //   })
+    // );
+    // setOldCart(
+    //   cart.filter((item) => {
+    //     return item.quantity > 0;
+    //   })
+    // );
+    navigate(`/checkout`, { state: { oldCart: { cart } } });
   };
 
   const handleEmptyCart = (e) => {
@@ -181,6 +169,12 @@ const Cart = () => {
     setCart([]);
     setOldCart([]);
     setCartPrice(0);
+  };
+
+  const handleItemClick = (e) => {
+    e.preventDefault();
+    const productId = Number(e.target.getAttribute("data-itemid"));
+    navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (
@@ -207,7 +201,7 @@ const Cart = () => {
             <Row xs={2} className="g-4">
               <Col xs={9}>
                 {cart.map((item) => (
-                  <Col key={item.id}>
+                  <Col key={item.id} className="cartItemCol-div">
                     <CartItem
                       cardImage={item.image}
                       cardTitle={item.title}
@@ -224,11 +218,12 @@ const Cart = () => {
                       cardItemId={item.itemId}
                       onPlus={handleOnPlus}
                       onMinus={handleOnMinus}
+                      onItemClick={handleItemClick}
                     />
                   </Col>
                 ))}
               </Col>
-              <Col xs={3}>
+              <Col xs={3} className="proceedToCheckoutCol-div">
                 <ProceedToCheckOut
                   cartPrice={cartPrice}
                   onProceedToCheckOut={handleProceedToCheckOut}

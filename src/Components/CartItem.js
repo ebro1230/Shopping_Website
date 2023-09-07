@@ -27,10 +27,21 @@ const CartItem = (props) => {
         <Row>
           <Col>
             <Row>
-              <Card.Img variant="top" src={cardImage} />
+              <Card.Img
+                variant="top"
+                src={cardImage}
+                data-itemid={cardItemId}
+                onClick={props.onItemClick}
+              />
             </Row>
             <Row>
-              <Card.Title className="cartItemTitle-div">{cardTitle}</Card.Title>
+              <Card.Title
+                className="cartItemTitle-div"
+                data-itemid={cardItemId}
+                onClick={props.onItemClick}
+              >
+                {cardTitle}
+              </Card.Title>
             </Row>
           </Col>
           <Col className="cartRatingAndDescription-div">

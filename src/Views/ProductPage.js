@@ -91,7 +91,6 @@ const ProductPage = () => {
 
   const handleOnAddToCart = (e) => {
     e.preventDefault();
-    console.log("Added to Cart");
     setCart(
       cart.find(
         (cartItem) => Number(cartItem.itemId) === Number(product.itemId)

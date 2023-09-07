@@ -17,6 +17,39 @@ const HomePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`https://fakestoreapi.com/products`)
+      .then((response) => {
+        setItems(
+          response.data.map((item) => {
+            return (item = {
+              category: item.category,
+              description: item.description,
+              id: item.id,
+              itemId: item.id,
+              image: item.image,
+              price: item.price.toFixed(2),
+              rating: item.rating,
+              title: item.title,
+              quantity: 0,
+            });
+          })
+        );
+        if (location.state) {
+          const { oldCart } = location.state;
+          setCart(oldCart.cart);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
   const handleOnPlus = (e) => {
     e.preventDefault();
     const increaseId = e.target.id;
@@ -64,6 +97,7 @@ const HomePage = () => {
       })
     );
   };
+
   const handleOnAddToCart = (e) => {
     e.preventDefault();
     const itemId = e.target.id;
@@ -116,39 +150,6 @@ const HomePage = () => {
     const productId = Number(e.target.getAttribute("data-itemid"));
     navigate(`product/${productId}`, { state: { oldCart: { cart } } });
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(`https://fakestoreapi.com/products`)
-      .then((response) => {
-        setItems(
-          response.data.map((item) => {
-            return (item = {
-              category: item.category,
-              description: item.description,
-              id: item.id,
-              itemId: item.id,
-              image: item.image,
-              price: item.price.toFixed(2),
-              rating: item.rating,
-              title: item.title,
-              quantity: 0,
-            });
-          })
-        );
-        if (location.state) {
-          const { oldCart } = location.state;
-          setCart(oldCart.cart);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, []);
 
   return (
     <>

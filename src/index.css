@@ -116,6 +116,7 @@ code {
   display: flex;
   justify-content: center;
   text-align: center;
+  height:auto;
 }
 .updateButton-div{
   display:flex;
@@ -194,4 +195,10 @@ code {
   display:flex;
   flex-direction: column;
   justify-content: center;
+}
+.cartItemCol-div{
+  margin-top:0.5rem;
+}
+.proceedToCheckoutCol-div{
+  margin-top: 2.0rem;
 }

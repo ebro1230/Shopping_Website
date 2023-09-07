@@ -4,7 +4,7 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 import Item from "../Components/Item";
 import LoadingIndicator from "../Components/LoadingIndicator";
@@ -15,7 +15,41 @@ const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
   let { category } = useParams();
+
+  useEffect(() => {
+    setIsLoading(true);
+    axios
+      .get(`https://fakestoreapi.com/products/category/${category}`)
+      .then((response) => {
+        setItems(
+          response.data.map((item) => {
+            return (item = {
+              category: item.category,
+              description: item.description,
+              id: item.id,
+              itemId: item.id,
+              image: item.image,
+              price: item.price.toFixed(2),
+              rating: item.rating,
+              title: item.title,
+              quantity: 0,
+            });
+          })
+        );
+        if (location.state) {
+          const { oldCart } = location.state;
+          setCart(oldCart.cart);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [category]);
 
   const handleOnPlus = (e) => {
     e.preventDefault();
@@ -64,6 +98,7 @@ const HomePage = () => {
       })
     );
   };
+
   const handleOnAddToCart = (e) => {
     e.preventDefault();
     const itemId = e.target.id;
@@ -111,38 +146,11 @@ const HomePage = () => {
     );
   };
 
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(`https://fakestoreapi.com/products/category/${category}`)
-      .then((response) => {
-        setItems(
-          response.data.map((item) => {
-            return (item = {
-              category: item.category,
-              description: item.description,
-              id: item.id,
-              itemId: item.id,
-              image: item.image,
-              price: item.price.toFixed(2),
-              rating: item.rating,
-              title: item.title,
-              quantity: 0,
-            });
-          })
-        );
-        if (location.state) {
-          const { oldCart } = location.state;
-          setCart(oldCart.cart);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [category]);
+  const handleItemClick = (e) => {
+    e.preventDefault();
+    const productId = Number(e.target.getAttribute("data-itemid"));
+    navigate(`product/${productId}`, { state: { oldCart: { cart } } });
+  };
 
   return (
     <>
@@ -168,6 +176,7 @@ const HomePage = () => {
                   onPlus={handleOnPlus}
                   onMinus={handleOnMinus}
                   onAddToCart={handleOnAddToCart}
+                  onItemClick={handleItemClick}
                 />
               </Col>
             ))}
