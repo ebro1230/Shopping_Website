@@ -202,3 +202,21 @@ code {
 .proceedToCheckoutCol-div{
   margin-top: 2.0rem;
 }
+.deliveryAndBilling-div{
+  padding-right: 0.5rem;
+}
+.checkoutInfo-div{
+  margin-bottom: 1rem;
+}
+.formContent-div{
+  justify-content: center;
+}
+.accordion-body{
+  padding-left: 5rem;
+  padding-right: 5rem;
+}
+.expirationDateSlash-div{
+  justify-content: center;
+  display: flex;
+  align-items: center
+}

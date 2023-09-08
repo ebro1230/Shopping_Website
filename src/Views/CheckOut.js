@@ -80,7 +80,7 @@ const CheckOut = () => {
 
       {cart.length ? (
         <>
-          <Col xs={9}>
+          <Col xs={9} className="updateButton-div">
             <Button
               className="cartButton"
               variant="warning"
@@ -90,12 +90,12 @@ const CheckOut = () => {
             </Button>
           </Col>
           <Row>
-            <Col xs={9}>
+            <Col xs={9} className="deliveryAndBilling-div">
               <div className="checkOutForm-div">
                 <Form>
                   <Accordion defaultActiveKey="0">
                     <Form.Group>
-                      <Accordion.Item eventKey="0">
+                      <Accordion.Item className="checkoutInfo-div" eventKey="0">
                         {(deliveryName.length &&
                           street.length &&
                           country.length &&
@@ -121,8 +121,8 @@ const CheckOut = () => {
                         )}
 
                         <Accordion.Body>
-                          <Row>
-                            <Col>
+                          <Row className="formContent-div">
+                            <Col xs={12}>
                               <Form.Label>Name:</Form.Label>
                               <Form.Control
                                 type="text"
@@ -134,8 +134,8 @@ const CheckOut = () => {
                               />
                             </Col>
                           </Row>
-                          <Row>
-                            <Col>
+                          <Row className="formContent-div">
+                            <Col xs={12}>
                               <Form.Label>Street:</Form.Label>
                               <Form.Control
                                 type="text"
@@ -145,8 +145,8 @@ const CheckOut = () => {
                               />
                             </Col>
                           </Row>
-                          <Row>
-                            <Col>
+                          <Row className="formContent-div">
+                            <Col xs={9}>
                               <Form.Label>Country:</Form.Label>
                               <Form.Select
                                 onChange={(e) => {
@@ -173,10 +173,9 @@ const CheckOut = () => {
                                 })}
                               </Form.Select>
                             </Col>
-                          </Row>
-                          {country === "United States Of America" ? (
-                            <Row>
-                              <Col>
+
+                            {country === "United States Of America" ? (
+                              <Col xs={3}>
                                 <Form.Label>State:</Form.Label>
                                 <Form.Select
                                   onChange={(e) => setState(e.target.value)}
@@ -192,10 +191,27 @@ const CheckOut = () => {
                                   })}
                                 </Form.Select>
                               </Col>
-                            </Row>
-                          ) : null}
-                          <Row>
-                            <Col>
+                            ) : (
+                              <Col xs={3}>
+                                <Form.Label>State:</Form.Label>
+                                <Form.Select
+                                  onChange={(e) => setState(e.target.value)}
+                                  placeholder="State"
+                                  disabled
+                                >
+                                  <option key="blankChoice" hidden value>
+                                    {" "}
+                                    --State--{" "}
+                                  </option>
+                                  {stateAbbreviations.map((state) => {
+                                    return <option key={state}>{state}</option>;
+                                  })}
+                                </Form.Select>
+                              </Col>
+                            )}
+                          </Row>
+                          <Row className="formContent-div">
+                            <Col xs={9}>
                               <Form.Label>City:</Form.Label>
                               <Form.Control
                                 type="text"
@@ -204,7 +220,7 @@ const CheckOut = () => {
                                 required
                               />
                             </Col>
-                            <Col>
+                            <Col xs={3}>
                               <Form.Label>Postal Code:</Form.Label>
                               <Form.Control
                                 type="text"
@@ -219,7 +235,7 @@ const CheckOut = () => {
                     </Form.Group>
 
                     <Form.Group>
-                      <Accordion.Item eventKey="1">
+                      <Accordion.Item className="checkoutInfo-div" eventKey="1">
                         {(cardName.length &&
                           cardNumber.length === 16 &&
                           expirationMonth.length === 2 &&
@@ -256,8 +272,8 @@ const CheckOut = () => {
                           </Accordion.Header>
                         )}
                         <Accordion.Body>
-                          <Row>
-                            <Col>
+                          <Row className="formContent-div">
+                            <Col xs={12}>
                               <Form.Label>Name on Card:</Form.Label>
                               <Form.Control
                                 type="text"
@@ -267,7 +283,7 @@ const CheckOut = () => {
                               />
                             </Col>
                           </Row>
-                          <Row>
+                          <Row className="formContent-div">
                             <Col>
                               <Form.Label>Card Number:</Form.Label>
                               <Form.Control
@@ -277,12 +293,11 @@ const CheckOut = () => {
                                 required
                               />
                             </Col>
-                          </Row>
-                          <Row>
-                            <Col>
+
+                            <Col xs={3}>
                               <Form.Label>Expiration Date:</Form.Label>
                               <Row>
-                                <Col>
+                                <Col xs={5}>
                                   <Form.Select
                                     onChange={(e) =>
                                       setExpirationMonth(e.target.value)
@@ -301,8 +316,8 @@ const CheckOut = () => {
                                     })}
                                   </Form.Select>
                                 </Col>
-                                <Col>/</Col>
-                                <Col>
+                                <Col className="expirationDateSlash-div">/</Col>
+                                <Col xs={5}>
                                   <Form.Select
                                     onChange={(e) =>
                                       setExpirationYear(e.target.value)
@@ -321,9 +336,7 @@ const CheckOut = () => {
                                 </Col>
                               </Row>
                             </Col>
-                          </Row>
-                          <Row>
-                            <Col>
+                            <Col xs={2}>
                               <Form.Label>CCV:</Form.Label>
                               <Form.Control
                                 type="password"
@@ -398,10 +411,10 @@ const CheckOut = () => {
                                     })}
                                   </Form.Select>
                                 </Col>
-                              </Row>
-                              {billingCountry === "United States Of America" ? (
-                                <Row>
-                                  <Col>
+
+                                {billingCountry ===
+                                "United States Of America" ? (
+                                  <Col xs={3}>
                                     <Form.Label>State:</Form.Label>
                                     <Form.Select
                                       onChange={(e) =>
@@ -421,10 +434,31 @@ const CheckOut = () => {
                                       })}
                                     </Form.Select>
                                   </Col>
-                                </Row>
-                              ) : null}
+                                ) : (
+                                  <Col xs={3}>
+                                    <Form.Label>State:</Form.Label>
+                                    <Form.Select
+                                      onChange={(e) =>
+                                        setBillingState(e.target.value)
+                                      }
+                                      placeholder="State"
+                                      disabled
+                                    >
+                                      <option key="blankChoice" hidden value>
+                                        {" "}
+                                        --State--{" "}
+                                      </option>
+                                      {stateAbbreviations.map((state) => {
+                                        return (
+                                          <option key={state}>{state}</option>
+                                        );
+                                      })}
+                                    </Form.Select>
+                                  </Col>
+                                )}
+                              </Row>
                               <Row>
-                                <Col>
+                                <Col xs={9}>
                                   <Form.Label>City:</Form.Label>
                                   <Form.Control
                                     type="text"
@@ -435,7 +469,7 @@ const CheckOut = () => {
                                     required
                                   />
                                 </Col>
-                                <Col>
+                                <Col xs={3}>
                                   <Form.Label>Postal Code:</Form.Label>
                                   <Form.Control
                                     type="text"
@@ -520,7 +554,7 @@ const CheckOut = () => {
                       variant="warning"
                       onClick={handleReturntoShopping}
                     >
-                      Continue Shopping
+                      Back to Shopping
                     </Button>
                   </div>
                 </Card.Body>
