@@ -151,16 +151,6 @@ const Cart = () => {
 
   const handleProceedToCheckOut = (e) => {
     e.preventDefault();
-    // setCart(
-    //   cart.filter((item) => {
-    //     return item.quantity > 0;
-    //   })
-    // );
-    // setOldCart(
-    //   cart.filter((item) => {
-    //     return item.quantity > 0;
-    //   })
-    // );
     navigate(`/checkout`, { state: { oldCart: { cart } } });
   };
 
