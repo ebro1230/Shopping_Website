@@ -3,10 +3,15 @@ import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Accordion from "react-bootstrap/Accordion";
+import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
+
+import CartItem from "../Components/CartItem";
+import UpdateCartButton from "../Components/UpdateCartButton";
+import LoadingIndicator from "../Components/LoadingIndicator";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
@@ -23,8 +28,13 @@ import {
 import CustomNav from "../Components/CustomNav";
 
 const CheckOut = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const [oldCart, setOldCart] = useState([]);
   const [cartPrice, setCartPrice] = useState([]);
+  const [newCartPrice, setNewCartPrice] = useState([]);
+  const [quantityChange, setQuantityChange] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [deliveryName, setDeliveryName] = useState([]);
   const [street, setStreet] = useState([]);
   const [country, setCountry] = useState([]);
@@ -47,15 +57,109 @@ const CheckOut = () => {
 
   useEffect(() => {
     if (location.state) {
-      const { oldCart } = location.state;
-      setCart(oldCart.cart);
+      setCart(location.state.oldCart.cart);
+      setOldCart(location.state.oldCart.cart);
       let price = 0;
       location.state.oldCart.cart.forEach((item) => {
         price = price + Number(item.quantity) * Number(item.price);
       });
       setCartPrice(price);
+      setNewCartPrice(price);
     }
   }, []);
+
+  const handleOnPlus = (e) => {
+    e.preventDefault();
+    let price = Number(newCartPrice);
+    let difference = [];
+    const increaseId = e.target.id;
+    const increaseQuantity = Number(e.target.getAttribute("data-quantity")) + 1;
+    oldCart.forEach((oldItem) => {
+      if (Number(oldItem.itemId) === Number(increaseId)) {
+        price = Number(price) + Number(oldItem.price);
+      }
+    });
+    for (let i = 0; i < cart.length; i++) {
+      if (Number(cart[i].itemId) === Number(increaseId)) {
+        if (Number(cart[i].quantity + 1) != Number(oldCart[i].quantity)) {
+          difference = [difference, true];
+        }
+      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+        difference = [...difference, true];
+      } else {
+        difference = [...difference, false];
+      }
+    }
+    setQuantityChange(difference.includes(true));
+    setQuantityChange(difference.includes(true));
+    setNewCartPrice(price);
+    setCart(
+      cart.map((item) => {
+        if (Number(item.itemId) === Number(increaseId)) {
+          return (item = {
+            category: item.category,
+            description: item.description,
+            id: item.id,
+            itemId: item.itemId,
+            image: item.image,
+            price: item.price,
+            rating: item.rating,
+            title: item.title,
+            quantity: item.quantity + 1,
+          });
+        } else {
+          return item;
+        }
+      })
+    );
+  };
+
+  const handleOnMinus = (e) => {
+    e.preventDefault();
+    const decreaseId = e.target.id;
+    let difference = [];
+    let price = newCartPrice;
+    const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
+    oldCart.forEach((oldItem) => {
+      if (Number(oldItem.itemId) === Number(decreaseId)) {
+        if (cart.find((item) => item.itemId === oldItem.itemId).quantity != 0) {
+          price = Number(price) - Number(oldItem.price);
+        }
+      }
+    });
+    for (let i = 0; i < cart.length; i++) {
+      if (Number(cart[i].itemId) === Number(decreaseId)) {
+        if (Number(cart[i].quantity - 1) != Number(oldCart[i].quantity)) {
+          difference = [difference, true];
+        }
+      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+        difference = [...difference, true];
+      } else {
+        difference = [...difference, false];
+      }
+    }
+    setQuantityChange(difference.includes(true));
+    setNewCartPrice(Number(price));
+    setCart(
+      cart.map((item) => {
+        if (Number(item.itemId) === Number(decreaseId)) {
+          return (item = {
+            category: item.category,
+            description: item.description,
+            id: item.id,
+            itemId: item.itemId,
+            image: item.image,
+            price: item.price,
+            rating: item.rating,
+            title: item.title,
+            quantity: item.quantity === 0 ? 0 : item.quantity - 1,
+          });
+        } else {
+          return item;
+        }
+      })
+    );
+  };
 
   const handleReturntoShopping = (e) => {
     e.preventDefault();
@@ -65,20 +169,54 @@ const CheckOut = () => {
   const handleEmptyCart = (e) => {
     e.preventDefault();
     setCart([]);
+    setOldCart([]);
     setCartPrice(0);
   };
 
   const handlePay = (e) => {
     e.preventDefault();
+    setPaymentSuccess(true);
+    setTimeout(() => {
+      setPaymentSuccess(false);
+    }, 3000);
     setCart([]);
     setCartPrice(0);
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+    setCart(
+      cart.filter((item) => {
+        return item.quantity > 0;
+      })
+    );
+    setOldCart(
+      cart.filter((item) => {
+        return item.quantity > 0;
+      })
+    );
+    setCartPrice(newCartPrice);
+
+    setQuantityChange(false);
+  };
+
+  const handleItemClick = (e) => {
+    e.preventDefault();
+    const productId = Number(e.target.getAttribute("data-itemid"));
+    navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (
     <>
       <CustomNav cart={cart} />
 
-      {cart.length ? (
+      {paymentSuccess ? (
+        <Modal show={true} centered>
+          <Modal.Header>
+            <Modal.Title>Payment Successful!</Modal.Title>
+          </Modal.Header>
+        </Modal>
+      ) : cart.length ? (
         <>
           <Col xs={9} className="updateButton-div">
             <Button
@@ -92,8 +230,8 @@ const CheckOut = () => {
           <Row>
             <Col xs={9} className="deliveryAndBilling-div">
               <div className="checkOutForm-div">
-                <Form>
-                  <Accordion defaultActiveKey="0">
+                <Accordion defaultActiveKey="0">
+                  <Form>
                     <Form.Group>
                       <Accordion.Item className="checkoutInfo-div" eventKey="0">
                         {(deliveryName.length &&
@@ -113,7 +251,10 @@ const CheckOut = () => {
                             <FontAwesomeIcon
                               icon={faSquareCheck}
                               size="xl"
-                              style={{ color: "#4dc63c", paddingLeft: "1rem" }}
+                              style={{
+                                color: "#4dc63c",
+                                paddingLeft: "1rem",
+                              }}
                             />
                           </Accordion.Header>
                         ) : (
@@ -180,6 +321,7 @@ const CheckOut = () => {
                                 <Form.Select
                                   onChange={(e) => setState(e.target.value)}
                                   placeholder="State"
+                                  value={state}
                                   required
                                 >
                                   <option key="blankChoice" hidden value>
@@ -197,6 +339,7 @@ const CheckOut = () => {
                                 <Form.Select
                                   onChange={(e) => setState(e.target.value)}
                                   placeholder="State"
+                                  value={state}
                                   disabled
                                 >
                                   <option key="blankChoice" hidden value>
@@ -263,7 +406,10 @@ const CheckOut = () => {
                             <FontAwesomeIcon
                               icon={faSquareCheck}
                               size="xl"
-                              style={{ color: "#4dc63c", paddingLeft: "1rem" }}
+                              style={{
+                                color: "#4dc63c",
+                                paddingLeft: "1rem",
+                              }}
                             />
                           </Accordion.Header>
                         ) : (
@@ -421,6 +567,7 @@ const CheckOut = () => {
                                         setBillingState(e.target.value)
                                       }
                                       placeholder="State"
+                                      value={billingState}
                                       required
                                     >
                                       <option key="blankChoice" hidden value>
@@ -442,6 +589,7 @@ const CheckOut = () => {
                                         setBillingState(e.target.value)
                                       }
                                       placeholder="State"
+                                      value={billingState}
                                       disabled
                                     >
                                       <option key="blankChoice" hidden value>
@@ -486,8 +634,74 @@ const CheckOut = () => {
                         </Accordion.Body>
                       </Accordion.Item>
                     </Form.Group>
-                  </Accordion>
-                </Form>
+                  </Form>
+
+                  <Accordion.Item className="checkoutInfo-div" eventKey="2">
+                    <Accordion.Header>Cart Summary:</Accordion.Header>
+
+                    <Accordion.Body>
+                      <>
+                        <UpdateCartButton
+                          oldCart={oldCart}
+                          cart={cart}
+                          onUpdate={handleUpdate}
+                          quantityChange={quantityChange}
+                        />
+                        <div className="itemsCheckout-container">
+                          {isLoading ? (
+                            <div className="loading-div">
+                              <LoadingIndicator />
+                            </div>
+                          ) : cart.length ? (
+                            <>
+                              <Row xs={2} className="g-4">
+                                <Col xs={12}>
+                                  {cart.map((item) => (
+                                    <Col
+                                      key={item.id}
+                                      className="cartItemCol-div"
+                                    >
+                                      <CartItem
+                                        cardImage={item.image}
+                                        cardTitle={item.title}
+                                        cardRating={item.rating.rate}
+                                        cardPrice={item.price}
+                                        cardText={item.description}
+                                        cardQuantity={item.quantity}
+                                        cardOriginalQuantity={
+                                          oldCart.filter((oldItem) => {
+                                            return (oldItem.id = item.id);
+                                          }).quantity
+                                        }
+                                        cardId={item.id}
+                                        cardItemId={item.itemId}
+                                        onPlus={handleOnPlus}
+                                        onMinus={handleOnMinus}
+                                        onItemClick={handleItemClick}
+                                      />
+                                    </Col>
+                                  ))}
+                                </Col>
+                              </Row>
+                            </>
+                          ) : (
+                            <Row>
+                              <Col xs={9}>
+                                <Card>
+                                  <Card.Body className="noItemsBody-div">
+                                    <Card.Title className="noItems-div">
+                                      No Items In Cart
+                                    </Card.Title>
+                                  </Card.Body>
+                                </Card>
+                              </Col>
+                            </Row>
+                          )}
+                        </div>
+                      </>
+                    </Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
               </div>
             </Col>
             <Col>
@@ -562,7 +776,91 @@ const CheckOut = () => {
             </Col>
           </Row>
         </>
-      ) : null}
+      ) : (
+        <Row>
+          <Col xs={9}>
+            <Card>
+              <Card.Body className="noItemsBody-div">
+                <Card.Title className="noItems-div">
+                  No Items In Cart
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col>
+            <Card>
+              <Card.Body className="ProceedToCheckOut-div">
+                <Card.Title className="cartTitle-div">Cart:</Card.Title>
+
+                <div className="cartButtons-div">
+                  {((deliveryName.length &&
+                    street.length &&
+                    country.length &&
+                    country != "United States Of America" &&
+                    city.length &&
+                    postalCode.length === 5) ||
+                    (deliveryName.length &&
+                      street.length &&
+                      country === "United States Of America" &&
+                      state.length &&
+                      city.length &&
+                      postalCode.length === 5)) &&
+                  ((cardName.length &&
+                    cardNumber.length === 16 &&
+                    expirationMonth.length === 2 &&
+                    expirationYear.length === 2 &&
+                    CCV.length === 3 &&
+                    !differentAddress) ||
+                    (cardName.length &&
+                      cardNumber.length === 16 &&
+                      expirationMonth.length === 2 &&
+                      expirationYear.length === 2 &&
+                      CCV.length === 3 &&
+                      differentAddress &&
+                      ((billingStreet.length &&
+                        billingCountry.length &&
+                        billingCountry != "United States Of America" &&
+                        billingCity.length &&
+                        billingPostalCode.length === 5) ||
+                        (billingStreet.length &&
+                          billingCountry === "United States Of America" &&
+                          billingState.length &&
+                          billingCity.length &&
+                          billingPostalCode.length === 5)))) ? (
+                    <Button
+                      className="cartButton"
+                      variant="primary"
+                      type="submit"
+                      onClick={handlePay}
+                    >
+                      Pay
+                    </Button>
+                  ) : (
+                    <Button className="cartButton" variant="secondary">
+                      Pay
+                    </Button>
+                  )}
+                  <Button
+                    className="cartButton"
+                    variant="secondary"
+                    onClick={handleEmptyCart}
+                  >
+                    Empty Cart
+                  </Button>
+                  <Button
+                    className="cartButton"
+                    variant="warning"
+                    onClick={handleReturntoShopping}
+                  >
+                    Back to Shopping
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </>
   );
 };
