@@ -1609,7 +1609,6 @@ const dialingCodes = [
 ];
 
 const months = [
-  "00",
   "01",
   "02",
   "03",
