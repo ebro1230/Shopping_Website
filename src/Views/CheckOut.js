@@ -792,55 +792,11 @@ const CheckOut = () => {
             <Card>
               <Card.Body className="ProceedToCheckOut-div">
                 <Card.Title className="cartTitle-div">Cart:</Card.Title>
-
                 <div className="cartButtons-div">
-                  {((deliveryName.length &&
-                    street.length &&
-                    country.length &&
-                    country != "United States Of America" &&
-                    city.length &&
-                    postalCode.length === 5) ||
-                    (deliveryName.length &&
-                      street.length &&
-                      country === "United States Of America" &&
-                      state.length &&
-                      city.length &&
-                      postalCode.length === 5)) &&
-                  ((cardName.length &&
-                    cardNumber.length === 16 &&
-                    expirationMonth.length === 2 &&
-                    expirationYear.length === 2 &&
-                    CCV.length === 3 &&
-                    !differentAddress) ||
-                    (cardName.length &&
-                      cardNumber.length === 16 &&
-                      expirationMonth.length === 2 &&
-                      expirationYear.length === 2 &&
-                      CCV.length === 3 &&
-                      differentAddress &&
-                      ((billingStreet.length &&
-                        billingCountry.length &&
-                        billingCountry != "United States Of America" &&
-                        billingCity.length &&
-                        billingPostalCode.length === 5) ||
-                        (billingStreet.length &&
-                          billingCountry === "United States Of America" &&
-                          billingState.length &&
-                          billingCity.length &&
-                          billingPostalCode.length === 5)))) ? (
-                    <Button
-                      className="cartButton"
-                      variant="primary"
-                      type="submit"
-                      onClick={handlePay}
-                    >
-                      Pay
-                    </Button>
-                  ) : (
-                    <Button className="cartButton" variant="secondary">
-                      Pay
-                    </Button>
-                  )}
+                  <Button className="cartButton" variant="secondary">
+                    Pay
+                  </Button>
+
                   <Button
                     className="cartButton"
                     variant="secondary"
