@@ -13,6 +13,8 @@ import CartItem from "../Components/CartItem";
 import UpdateCartButton from "../Components/UpdateCartButton";
 import LoadingIndicator from "../Components/LoadingIndicator";
 
+import useWindowResize from "../useWindowResize";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 
@@ -55,7 +57,14 @@ const CheckOut = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { width, height, findScreenSize } = useWindowResize();
+
+  window.addEventListener("resize", () => {
+    findScreenSize();
+  });
+
   useEffect(() => {
+    findScreenSize();
     if (location.state) {
       setCart(location.state.oldCart.cart);
       setOldCart(location.state.oldCart.cart);
@@ -216,7 +225,7 @@ const CheckOut = () => {
             <Modal.Title>Payment Successful!</Modal.Title>
           </Modal.Header>
         </Modal>
-      ) : cart.length ? (
+      ) : cart.length && width > 1073 ? (
         <>
           <Col xs={9} className="updateButton-div">
             <Button
@@ -230,7 +239,7 @@ const CheckOut = () => {
           <Row>
             <Col xs={9} className="deliveryAndBilling-div">
               <div className="checkOutForm-div">
-                <Accordion defaultActiveKey="0">
+                <Accordion>
                   <Form>
                     <Form.Group>
                       <Accordion.Item className="checkoutInfo-div" eventKey="0">
@@ -678,6 +687,7 @@ const CheckOut = () => {
                                         onPlus={handleOnPlus}
                                         onMinus={handleOnMinus}
                                         onItemClick={handleItemClick}
+                                        width={width}
                                       />
                                     </Col>
                                   ))}
@@ -705,7 +715,7 @@ const CheckOut = () => {
               </div>
             </Col>
             <Col>
-              <Card>
+              <Card className="spacing-div">
                 <Card.Body className="ProceedToCheckOut-div">
                   <Card.Title className="cartTitle-div">Cart:</Card.Title>
                   <Card.Text className="cartPrice-div">
@@ -776,7 +786,551 @@ const CheckOut = () => {
             </Col>
           </Row>
         </>
-      ) : (
+      ) : cart.length ? (
+        <Col>
+          <Row>
+            <Card className="spacing-div">
+              <Card.Body className="ProceedToCheckOut-div">
+                <Card.Title className="cartTitle-div">Cart:</Card.Title>
+                <Card.Text className="cartPrice-div">
+                  ${cartPrice.toFixed(2)}
+                </Card.Text>
+
+                <div className="cartButtons-div">
+                  {((deliveryName.length &&
+                    street.length &&
+                    country.length &&
+                    country != "United States Of America" &&
+                    city.length &&
+                    postalCode.length === 5) ||
+                    (deliveryName.length &&
+                      street.length &&
+                      country === "United States Of America" &&
+                      state.length &&
+                      city.length &&
+                      postalCode.length === 5)) &&
+                  ((cardName.length &&
+                    cardNumber.length === 16 &&
+                    expirationMonth.length === 2 &&
+                    expirationYear.length === 2 &&
+                    CCV.length === 3 &&
+                    !differentAddress) ||
+                    (cardName.length &&
+                      cardNumber.length === 16 &&
+                      expirationMonth.length === 2 &&
+                      expirationYear.length === 2 &&
+                      CCV.length === 3 &&
+                      differentAddress &&
+                      ((billingStreet.length &&
+                        billingCountry.length &&
+                        billingCountry != "United States Of America" &&
+                        billingCity.length &&
+                        billingPostalCode.length === 5) ||
+                        (billingStreet.length &&
+                          billingCountry === "United States Of America" &&
+                          billingState.length &&
+                          billingCity.length &&
+                          billingPostalCode.length === 5)))) ? (
+                    <Button
+                      className="cartButton"
+                      variant="primary"
+                      type="submit"
+                      onClick={handlePay}
+                    >
+                      Pay
+                    </Button>
+                  ) : (
+                    <Button className="cartButton" variant="secondary">
+                      Pay
+                    </Button>
+                  )}
+                  <Button className="cartButton" onClick={handleEmptyCart}>
+                    Empty Cart
+                  </Button>
+                  <Button
+                    className="cartButton"
+                    variant="warning"
+                    onClick={handleReturntoShopping}
+                  >
+                    Back to Shopping
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Row>
+          <Row>
+            <div className="checkOutForm-div">
+              <Accordion>
+                <Form>
+                  <Form.Group>
+                    <Accordion.Item className="checkoutInfo-div" eventKey="0">
+                      {(deliveryName.length &&
+                        street.length &&
+                        country.length &&
+                        country != "United States Of America" &&
+                        city.length &&
+                        postalCode.length === 5) ||
+                      (deliveryName.length &&
+                        street.length &&
+                        country === "United States Of America" &&
+                        state.length &&
+                        city.length &&
+                        postalCode.length === 5) ? (
+                        <Accordion.Header>
+                          Delivery Address:{" "}
+                          <FontAwesomeIcon
+                            icon={faSquareCheck}
+                            size="xl"
+                            style={{
+                              color: "#4dc63c",
+                              paddingLeft: "1rem",
+                            }}
+                          />
+                        </Accordion.Header>
+                      ) : (
+                        <Accordion.Header>Delivery Address:</Accordion.Header>
+                      )}
+
+                      <Accordion.Body>
+                        <Row className="formContent-div">
+                          <Col xs={12}>
+                            <Form.Label>Name:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={deliveryName}
+                              onChange={(e) => setDeliveryName(e.target.value)}
+                              required
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="formContent-div">
+                          <Col xs={12}>
+                            <Form.Label>Street:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={street}
+                              onChange={(e) => setStreet(e.target.value)}
+                              required
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="formContent-div">
+                          <Col xs={12} md={9}>
+                            <Form.Label>Country:</Form.Label>
+                            <Form.Select
+                              onChange={(e) => {
+                                setCountry(e.target.value);
+                                if (
+                                  e.target.value != "United States Of America"
+                                ) {
+                                  setState([]);
+                                }
+                              }}
+                              placeholder="Country"
+                              required
+                            >
+                              <option key="blankChoice" hidden value>
+                                {" "}
+                                --Country--{" "}
+                              </option>
+                              {countryNames.map((countryName) => {
+                                return (
+                                  <option key={countryName}>
+                                    {countryName}
+                                  </option>
+                                );
+                              })}
+                            </Form.Select>
+                          </Col>
+
+                          {country === "United States Of America" ? (
+                            <Col xs={12} md={3}>
+                              <Form.Label>State:</Form.Label>
+                              <Form.Select
+                                onChange={(e) => setState(e.target.value)}
+                                placeholder="State"
+                                value={state}
+                                required
+                              >
+                                <option key="blankChoice" hidden value>
+                                  {" "}
+                                  --State--{" "}
+                                </option>
+                                {stateAbbreviations.map((state) => {
+                                  return <option key={state}>{state}</option>;
+                                })}
+                              </Form.Select>
+                            </Col>
+                          ) : (
+                            <Col xs={12} md={3}>
+                              <Form.Label>State:</Form.Label>
+                              <Form.Select
+                                onChange={(e) => setState(e.target.value)}
+                                placeholder="State"
+                                value={state}
+                                disabled
+                              >
+                                <option key="blankChoice" hidden value>
+                                  {" "}
+                                  --State--{" "}
+                                </option>
+                                {stateAbbreviations.map((state) => {
+                                  return <option key={state}>{state}</option>;
+                                })}
+                              </Form.Select>
+                            </Col>
+                          )}
+                        </Row>
+                        <Row className="formContent-div">
+                          <Col xs={12} md={9}>
+                            <Form.Label>City:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={city}
+                              onChange={(e) => setCity(e.target.value)}
+                              required
+                            />
+                          </Col>
+                          <Col xs={12} md={3}>
+                            <Form.Label>Postal Code:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={postalCode}
+                              onChange={(e) => setPostalCode(e.target.value)}
+                              required
+                            />
+                          </Col>
+                        </Row>
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Form.Group>
+
+                  <Form.Group>
+                    <Accordion.Item className="checkoutInfo-div" eventKey="1">
+                      {(cardName.length &&
+                        cardNumber.length === 16 &&
+                        expirationMonth.length === 2 &&
+                        expirationYear.length === 2 &&
+                        CCV.length === 3 &&
+                        !differentAddress) ||
+                      (cardName.length &&
+                        cardNumber.length === 16 &&
+                        expirationMonth.length === 2 &&
+                        expirationYear.length === 2 &&
+                        CCV.length === 3 &&
+                        differentAddress &&
+                        ((billingStreet.length &&
+                          billingCountry.length &&
+                          billingCountry != "United States Of America" &&
+                          billingCity.length &&
+                          billingPostalCode.length === 5) ||
+                          (billingStreet.length &&
+                            billingCountry === "United States Of America" &&
+                            billingState.length &&
+                            billingCity.length &&
+                            billingPostalCode.length === 5))) ? (
+                        <Accordion.Header>
+                          Credit Card Details:{" "}
+                          <FontAwesomeIcon
+                            icon={faSquareCheck}
+                            size="xl"
+                            style={{
+                              color: "#4dc63c",
+                              paddingLeft: "1rem",
+                            }}
+                          />
+                        </Accordion.Header>
+                      ) : (
+                        <Accordion.Header>
+                          Credit Card Details:
+                        </Accordion.Header>
+                      )}
+                      <Accordion.Body>
+                        <Row className="formContent-div">
+                          <Col sm={12} md={5}>
+                            <Form.Label>Name on Card:</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={cardName}
+                              onChange={(e) => setCardName(e.target.value)}
+                              required
+                            />
+                          </Col>
+                          <Col sm={12} md={4}>
+                            <Form.Label>Expiration Date:</Form.Label>
+                            <Row>
+                              <Col xs={5}>
+                                <Form.Select
+                                  onChange={(e) =>
+                                    setExpirationMonth(e.target.value)
+                                  }
+                                  placeholder="MM"
+                                  required
+                                >
+                                  <option key="blankChoice" hidden value>
+                                    {" "}
+                                    MM{" "}
+                                  </option>
+                                  {months.map((month) => {
+                                    return <option key={month}>{month}</option>;
+                                  })}
+                                </Form.Select>
+                              </Col>
+                              <Col className="expirationDateSlash-div">/</Col>
+                              <Col xs={5}>
+                                <Form.Select
+                                  onChange={(e) =>
+                                    setExpirationYear(e.target.value)
+                                  }
+                                  placeholder="MM"
+                                  required
+                                >
+                                  <option key="blankChoice" hidden value>
+                                    {" "}
+                                    YY{" "}
+                                  </option>
+                                  {years.map((year) => {
+                                    return <option key={year}>{year}</option>;
+                                  })}
+                                </Form.Select>
+                              </Col>
+                            </Row>
+                          </Col>
+                          <Col sm={12} md={3}>
+                            <Form.Label>CCV:</Form.Label>
+                            <Form.Control
+                              type="password"
+                              value={CCV}
+                              onChange={(e) => setCCV(e.target.value)}
+                              required
+                            />
+                          </Col>
+                        </Row>
+                        <Row className="formContent-div">
+                          <Col>
+                            <Form.Label>Card Number:</Form.Label>
+                            <Form.Control
+                              type="number"
+                              value={cardNumber}
+                              onChange={(e) => setCardNumber(e.target.value)}
+                              required
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col>
+                            <Form.Label>Billing Address:</Form.Label>
+                            <Form.Check // prettier-ignore
+                              type="checkbox"
+                              id="custom-switch"
+                              label="Billing Address different from Delivery Address?"
+                              value={differentAddress}
+                              onChange={(e) => {
+                                setDifferentAddress(!differentAddress);
+                                if (!differentAddress === false) {
+                                  setBillingCity([]);
+                                  setBillingCountry([]);
+                                  setBillingPostalCode([]);
+                                  setBillingState([]);
+                                  setBillingStreet([]);
+                                }
+                              }}
+                            />
+                          </Col>
+                        </Row>
+                        {differentAddress ? (
+                          <>
+                            <Row>
+                              <Col>
+                                <Form.Label>Street:</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={billingStreet}
+                                  onChange={(e) =>
+                                    setBillingStreet(e.target.value)
+                                  }
+                                  required
+                                />
+                              </Col>
+                            </Row>
+                            <Row>
+                              <Col>
+                                <Form.Label>Country:</Form.Label>
+                                <Form.Select
+                                  onChange={(e) => {
+                                    setBillingCountry(e.target.value);
+                                    if (
+                                      e.target.value !=
+                                      "United States Of America"
+                                    ) {
+                                      setBillingState([]);
+                                    }
+                                  }}
+                                  placeholder="Country"
+                                  required
+                                >
+                                  <option key="blankChoice" hidden value>
+                                    {" "}
+                                    --Country--{" "}
+                                  </option>
+                                  {countryNames.map((countryName) => {
+                                    return (
+                                      <option key={countryName}>
+                                        {countryName}
+                                      </option>
+                                    );
+                                  })}
+                                </Form.Select>
+                              </Col>
+
+                              {billingCountry === "United States Of America" ? (
+                                <Col xs={12} md={3}>
+                                  <Form.Label>State:</Form.Label>
+                                  <Form.Select
+                                    onChange={(e) =>
+                                      setBillingState(e.target.value)
+                                    }
+                                    placeholder="State"
+                                    value={billingState}
+                                    required
+                                  >
+                                    <option key="blankChoice" hidden value>
+                                      {" "}
+                                      --State--{" "}
+                                    </option>
+                                    {stateAbbreviations.map((state) => {
+                                      return (
+                                        <option key={state}>{state}</option>
+                                      );
+                                    })}
+                                  </Form.Select>
+                                </Col>
+                              ) : (
+                                <Col xs={12} md={3}>
+                                  <Form.Label>State:</Form.Label>
+                                  <Form.Select
+                                    onChange={(e) =>
+                                      setBillingState(e.target.value)
+                                    }
+                                    placeholder="State"
+                                    value={billingState}
+                                    disabled
+                                  >
+                                    <option key="blankChoice" hidden value>
+                                      {" "}
+                                      --State--{" "}
+                                    </option>
+                                    {stateAbbreviations.map((state) => {
+                                      return (
+                                        <option key={state}>{state}</option>
+                                      );
+                                    })}
+                                  </Form.Select>
+                                </Col>
+                              )}
+                            </Row>
+                            <Row>
+                              <Col xs={12} md={9}>
+                                <Form.Label>City:</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={billingCity}
+                                  onChange={(e) =>
+                                    setBillingCity(e.target.value)
+                                  }
+                                  required
+                                />
+                              </Col>
+                              <Col xs={12} md={3}>
+                                <Form.Label>Postal Code:</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={billingPostalCode}
+                                  onChange={(e) =>
+                                    setBillingPostalCode(e.target.value)
+                                  }
+                                  required
+                                />
+                              </Col>
+                            </Row>{" "}
+                          </>
+                        ) : null}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Form.Group>
+                </Form>
+
+                <Accordion.Item className="checkoutInfo-div" eventKey="2">
+                  <Accordion.Header>Cart Summary:</Accordion.Header>
+
+                  <Accordion.Body>
+                    <>
+                      <UpdateCartButton
+                        oldCart={oldCart}
+                        cart={cart}
+                        onUpdate={handleUpdate}
+                        quantityChange={quantityChange}
+                      />
+                      <div className="itemsCheckout-container">
+                        {isLoading ? (
+                          <div className="loading-div">
+                            <LoadingIndicator />
+                          </div>
+                        ) : cart.length ? (
+                          <>
+                            <Row xs={2} className="g-4">
+                              <Col xs={12}>
+                                {cart.map((item) => (
+                                  <Col
+                                    key={item.id}
+                                    className="cartItemCol-div"
+                                  >
+                                    <CartItem
+                                      cardImage={item.image}
+                                      cardTitle={item.title}
+                                      cardRating={item.rating.rate}
+                                      cardPrice={item.price}
+                                      cardText={item.description}
+                                      cardQuantity={item.quantity}
+                                      cardOriginalQuantity={
+                                        oldCart.filter((oldItem) => {
+                                          return (oldItem.id = item.id);
+                                        }).quantity
+                                      }
+                                      cardId={item.id}
+                                      cardItemId={item.itemId}
+                                      onPlus={handleOnPlus}
+                                      onMinus={handleOnMinus}
+                                      onItemClick={handleItemClick}
+                                      width={width}
+                                    />
+                                  </Col>
+                                ))}
+                              </Col>
+                            </Row>
+                          </>
+                        ) : (
+                          <Row>
+                            <Col>
+                              <Card>
+                                <Card.Body className="noItemsBody-div">
+                                  <Card.Title className="noItems-div">
+                                    No Items In Cart
+                                  </Card.Title>
+                                </Card.Body>
+                              </Card>
+                            </Col>
+                          </Row>
+                        )}
+                      </div>
+                    </>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </div>
+          </Row>
+        </Col>
+      ) : width > 1073 ? (
         <Row>
           <Col xs={9}>
             <Card>
@@ -816,6 +1370,45 @@ const CheckOut = () => {
             </Card>
           </Col>
         </Row>
+      ) : (
+        <Col>
+          <Row>
+            <Card>
+              <Card.Body className="ProceedToCheckOut-div">
+                <Card.Title className="cartTitle-div">Cart:</Card.Title>
+                <div className="cartButtons-div">
+                  <Button className="cartButton" variant="secondary">
+                    Pay
+                  </Button>
+
+                  <Button
+                    className="cartButton"
+                    variant="secondary"
+                    onClick={handleEmptyCart}
+                  >
+                    Empty Cart
+                  </Button>
+                  <Button
+                    className="cartButton"
+                    variant="warning"
+                    onClick={handleReturntoShopping}
+                  >
+                    Back to Shopping
+                  </Button>
+                </div>
+              </Card.Body>
+            </Card>
+          </Row>
+          <Row>
+            <Card>
+              <Card.Body className="noItemsBody-div">
+                <Card.Title className="noItems-div">
+                  No Items In Cart
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          </Row>
+        </Col>
       )}
     </>
   );

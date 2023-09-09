@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useParams, useNavigate } from "react-router-dom";
+import useWindowResize from "../useWindowResize";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as faStarF } from "@fortawesome/free-solid-svg-icons";
@@ -25,8 +26,15 @@ const ProductPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { width, height, findScreenSize } = useWindowResize();
+
+  window.addEventListener("resize", () => {
+    findScreenSize();
+  });
+
   useEffect(() => {
     setIsLoading(true);
+    findScreenSize();
     axios
       .get(`https://fakestoreapi.com/products/${productId}`)
       .then((response) => {
@@ -135,10 +143,10 @@ const ProductPage = () => {
         <div className="loading-div">
           <LoadingIndicator />
         </div>
-      ) : product.itemId ? (
+      ) : product.itemId && width >= 1040 ? (
         <div className="productPage-div">
           <Col xs={9} className="product-div">
-            <Product product={product} />
+            <Product product={product} width={width} />
           </Col>
           <Col className="productCart-div">
             <AddToCart
@@ -150,7 +158,65 @@ const ProductPage = () => {
             />
           </Col>
         </div>
-      ) : null}
+      ) : product.itemId ? (
+        <Col>
+          <Row>
+            <AddToCart
+              product={product}
+              onReturn={handleReturntoShopping}
+              onPlus={handleOnPlus}
+              onMinus={handleOnMinus}
+              onAddToCart={handleOnAddToCart}
+              className="tinyWindowCart-div"
+            />
+          </Row>
+          <Row>
+            <Product product={product} width={width} />
+          </Row>
+        </Col>
+      ) : width >= 1040 ? (
+        <div className="productPage-div">
+          <Col xs={9} className="product-div">
+            <Card>
+              <Card.Body className="noItemsBody-div">
+                <Card.Title className="noItems-div">
+                  Product Unavailable
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col className="productCart-div">
+            <AddToCart
+              product={product}
+              onReturn={handleReturntoShopping}
+              onPlus={handleOnPlus}
+              onMinus={handleOnMinus}
+              onAddToCart={handleOnAddToCart}
+            />
+          </Col>
+        </div>
+      ) : (
+        <Col>
+          <Row>
+            <AddToCart
+              product={product}
+              onReturn={handleReturntoShopping}
+              onPlus={handleOnPlus}
+              onMinus={handleOnMinus}
+              onAddToCart={handleOnAddToCart}
+            />
+          </Row>
+          <Row>
+            <Card>
+              <Card.Body className="noItemsBody-div">
+                <Card.Title className="noItems-div">
+                  Product Unavailable
+                </Card.Title>
+              </Card.Body>
+            </Card>
+          </Row>
+        </Col>
+      )}
     </>
   );
 };

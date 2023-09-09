@@ -11,68 +11,122 @@ import { faStar as faStarE } from "@fortawesome/free-regular-svg-icons";
 
 const ProductPage = (props) => {
   const [product, setProduct] = useState(props.product);
+  const width = props.width;
 
   return (
-    <Card key={product.itemId}>
-      <Card.Body className="productCard-div">
-        <Row>
-          <Col xs={6}>
+    <>
+      {width >= 576 ? (
+        <Card key={product.itemId}>
+          <Card.Body className="productCard-div">
             <Row>
-              <Card.Img
-                variant="top"
-                className="productImg-div"
-                src={product.image}
+              <Col xs={6}>
+                <Row>
+                  <Card.Img
+                    variant="top"
+                    className="productImg-div"
+                    src={product.image}
+                  />
+                </Row>
+              </Col>
+              <Col xs={6} className="productRatingAndDescription-div">
+                <Row>
+                  <Card.Title className="cartItemTitle-div">
+                    <h1>{product.title}</h1>
+                  </Card.Title>
+                </Row>
+                <Row>
+                  <div className="card-rating">
+                    <Rating
+                      emptySymbol={
+                        <FontAwesomeIcon
+                          icon={faStarE}
+                          size="xl"
+                          style={{ color: "#f7eb02" }}
+                        />
+                      }
+                      fullSymbol={
+                        <FontAwesomeIcon
+                          icon={faStarF}
+                          size="xl"
+                          style={{ color: "#f7eb02" }}
+                        />
+                      }
+                      placeholderSymbol={
+                        <FontAwesomeIcon
+                          icon={faStarF}
+                          size="xl"
+                          style={{ color: "#f7eb02" }}
+                        />
+                      }
+                      intialRating={product.rating.rate}
+                      placeholderRating={product.rating.rate}
+                      fractions={10}
+                      step={1}
+                      readonly
+                      quiet
+                    />
+                  </div>
+                </Row>
+                <Row>
+                  <Card.Text>
+                    <h4>{product.description}</h4>
+                  </Card.Text>
+                </Row>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      ) : (
+        <Card key={product.itemId}>
+          <Card.Img
+            variant="top"
+            className="productImg-div"
+            src={product.image}
+          />
+          <Card.Body>
+            <Card.Title className="cartItemTitle-div">
+              <h1>{product.title}</h1>
+            </Card.Title>
+
+            <div className="card-rating">
+              <Rating
+                emptySymbol={
+                  <FontAwesomeIcon
+                    icon={faStarE}
+                    size="xl"
+                    style={{ color: "#f7eb02" }}
+                  />
+                }
+                fullSymbol={
+                  <FontAwesomeIcon
+                    icon={faStarF}
+                    size="xl"
+                    style={{ color: "#f7eb02" }}
+                  />
+                }
+                placeholderSymbol={
+                  <FontAwesomeIcon
+                    icon={faStarF}
+                    size="xl"
+                    style={{ color: "#f7eb02" }}
+                  />
+                }
+                intialRating={product.rating.rate}
+                placeholderRating={product.rating.rate}
+                fractions={10}
+                step={1}
+                readonly
+                quiet
               />
-            </Row>
-          </Col>
-          <Col xs={6} className="productRatingAndDescription-div">
-            <Row>
-              <Card.Title className="cartItemTitle-div">
-                <h1>{product.title}</h1>
-              </Card.Title>
-            </Row>
-            <Row>
-              <div className="card-rating">
-                <Rating
-                  emptySymbol={
-                    <FontAwesomeIcon
-                      icon={faStarE}
-                      size="xl"
-                      style={{ color: "#f7eb02" }}
-                    />
-                  }
-                  fullSymbol={
-                    <FontAwesomeIcon
-                      icon={faStarF}
-                      size="xl"
-                      style={{ color: "#f7eb02" }}
-                    />
-                  }
-                  placeholderSymbol={
-                    <FontAwesomeIcon
-                      icon={faStarF}
-                      size="xl"
-                      style={{ color: "#f7eb02" }}
-                    />
-                  }
-                  intialRating={product.rating.rate}
-                  placeholderRating={product.rating.rate}
-                  fractions={10}
-                  step={1}
-                  readonly
-                  quiet
-                />
-              </div>
-            </Row>
-            <Row>
-              <Card.Text>
-                <h4>{product.description}</h4>
-              </Card.Text>
-            </Row>
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
+            </div>
+
+            <Card.Text>
+              <h4>{product.description}</h4>
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      )}
+    </>
   );
 };
 

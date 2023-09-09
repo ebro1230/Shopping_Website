@@ -11,6 +11,8 @@ import CustomNav from "../Components/CustomNav";
 import ProceedToCheckOut from "../Components/ProceedToCheckOut";
 import UpdateCartButton from "../Components/UpdateCartButton";
 
+import useWindowResize from "../useWindowResize";
+
 const Cart = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
@@ -21,7 +23,14 @@ const Cart = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const { width, height, findScreenSize } = useWindowResize();
+
+  window.addEventListener("resize", () => {
+    findScreenSize();
+  });
+
   useEffect(() => {
+    findScreenSize();
     if (location.state) {
       setCart(location.state.oldCart.cart);
       setOldCart(location.state.oldCart.cart);
@@ -175,7 +184,7 @@ const Cart = () => {
           <div className="loading-div">
             <LoadingIndicator />
           </div>
-        ) : cart.length ? (
+        ) : cart.length && width > 1074 ? (
           <>
             <Row>
               <Col xs={9} className="updateButton-div">
@@ -209,6 +218,7 @@ const Cart = () => {
                       onPlus={handleOnPlus}
                       onMinus={handleOnMinus}
                       onItemClick={handleItemClick}
+                      width={width}
                     />
                   </Col>
                 ))}
@@ -223,7 +233,53 @@ const Cart = () => {
               </Col>
             </Row>
           </>
-        ) : (
+        ) : cart.length ? (
+          <Col>
+            <Row className="smallRowCart-div">
+              <ProceedToCheckOut
+                cartPrice={cartPrice}
+                onProceedToCheckOut={handleProceedToCheckOut}
+                onEmptyCart={handleEmptyCart}
+                onReturn={handleReturntoShopping}
+              />
+            </Row>
+            <Row>
+              <Col className="updateButton-div">
+                <UpdateCartButton
+                  oldCart={oldCart}
+                  cart={cart}
+                  onUpdate={handleUpdate}
+                  quantityChange={quantityChange}
+                />
+              </Col>
+            </Row>
+            <Row>
+              {cart.map((item) => (
+                <Col key={item.id} className="cartItemCol-div">
+                  <CartItem
+                    cardImage={item.image}
+                    cardTitle={item.title}
+                    cardRating={item.rating.rate}
+                    cardPrice={item.price}
+                    cardText={item.description}
+                    cardQuantity={item.quantity}
+                    cardOriginalQuantity={
+                      oldCart.filter((oldItem) => {
+                        return (oldItem.id = item.id);
+                      }).quantity
+                    }
+                    cardId={item.id}
+                    cardItemId={item.itemId}
+                    onPlus={handleOnPlus}
+                    onMinus={handleOnMinus}
+                    onItemClick={handleItemClick}
+                    width={width}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </Col>
+        ) : width > 1074 ? (
           <Row>
             <Col xs={9}>
               <Card>
@@ -244,6 +300,26 @@ const Cart = () => {
               />
             </Col>
           </Row>
+        ) : (
+          <Col>
+            <Row>
+              <ProceedToCheckOut
+                cartPrice={cartPrice}
+                onProceedToCheckOut={handleProceedToCheckOut}
+                onEmptyCart={handleEmptyCart}
+                onReturn={handleReturntoShopping}
+              />
+            </Row>
+            <Row>
+              <Card>
+                <Card.Body className="noItemsBody-div">
+                  <Card.Title className="noItems-div">
+                    No Items In Cart
+                  </Card.Title>
+                </Card.Body>
+              </Card>
+            </Row>
+          </Col>
         )}
       </div>
     </>

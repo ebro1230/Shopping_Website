@@ -20,69 +20,145 @@ const CartItem = (props) => {
   const cardItemId = props.cardItemId;
   const cardOldQuantity = props.cardOldQuantity;
   const totalPrice = (cardQuantity * cardPrice).toFixed(2);
+  const width = props.width;
 
   return (
-    <Card key={cardItemId}>
-      <Card.Body className="cartItemCard-div">
-        <Row>
-          <Col>
+    <>
+      {width >= 745 ? (
+        <Card key={cardItemId}>
+          <Card.Body className="cartItemCard-div">
             <Row>
-              <Card.Img
-                variant="top"
-                src={cardImage}
-                data-itemid={cardItemId}
-                onClick={props.onItemClick}
+              <Col>
+                <Row>
+                  <Card.Img
+                    variant="top"
+                    src={cardImage}
+                    data-itemid={cardItemId}
+                    onClick={props.onItemClick}
+                  />
+                </Row>
+                <Row>
+                  <Card.Title
+                    className="cartItemTitle-div"
+                    data-itemid={cardItemId}
+                    onClick={props.onItemClick}
+                  >
+                    {cardTitle}
+                  </Card.Title>
+                </Row>
+              </Col>
+              <Col className="cartRatingAndDescription-div">
+                <Row>
+                  <div className="card-rating">
+                    <Rating
+                      emptySymbol={
+                        <FontAwesomeIcon
+                          icon={faStarE}
+                          size="xl"
+                          style={{ color: "#f7eb02" }}
+                        />
+                      }
+                      fullSymbol={
+                        <FontAwesomeIcon
+                          icon={faStarF}
+                          size="xl"
+                          style={{ color: "#f7eb02" }}
+                        />
+                      }
+                      placeholderSymbol={
+                        <FontAwesomeIcon
+                          icon={faStarF}
+                          size="xl"
+                          style={{ color: "#f7eb02" }}
+                        />
+                      }
+                      intialRating={cardRating}
+                      placeholderRating={cardRating}
+                      fractions={10}
+                      step={1}
+                      readonly
+                      quiet
+                    />
+                  </div>
+                </Row>
+                <Row>
+                  <Card.Text>{cardText}</Card.Text>
+                </Row>
+              </Col>
+              <Col className="cartQuantity-div">
+                <div className="quantity-div">
+                  <Button
+                    id={cardItemId}
+                    onClick={props.onMinus}
+                    data-quantity={cardQuantity}
+                  >
+                    -
+                  </Button>
+                  <p>Quantity: {cardQuantity}</p>
+                  <Button
+                    id={cardItemId}
+                    onClick={props.onPlus}
+                    data-quantity={cardQuantity}
+                  >
+                    +
+                  </Button>
+                </div>
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+      ) : (
+        <Card key={cardItemId}>
+          <Card.Body className="cartItemCard-div">
+            <Card.Img
+              variant="top"
+              src={cardImage}
+              data-itemid={cardItemId}
+              onClick={props.onItemClick}
+            />
+
+            <Card.Title
+              className="cartItemTitle-div"
+              data-itemid={cardItemId}
+              onClick={props.onItemClick}
+            >
+              {cardTitle}
+            </Card.Title>
+
+            <div className="card-rating">
+              <Rating
+                emptySymbol={
+                  <FontAwesomeIcon
+                    icon={faStarE}
+                    size="xl"
+                    style={{ color: "#f7eb02" }}
+                  />
+                }
+                fullSymbol={
+                  <FontAwesomeIcon
+                    icon={faStarF}
+                    size="xl"
+                    style={{ color: "#f7eb02" }}
+                  />
+                }
+                placeholderSymbol={
+                  <FontAwesomeIcon
+                    icon={faStarF}
+                    size="xl"
+                    style={{ color: "#f7eb02" }}
+                  />
+                }
+                intialRating={cardRating}
+                placeholderRating={cardRating}
+                fractions={10}
+                step={1}
+                readonly
+                quiet
               />
-            </Row>
-            <Row>
-              <Card.Title
-                className="cartItemTitle-div"
-                data-itemid={cardItemId}
-                onClick={props.onItemClick}
-              >
-                {cardTitle}
-              </Card.Title>
-            </Row>
-          </Col>
-          <Col className="cartRatingAndDescription-div">
-            <Row>
-              <div className="card-rating">
-                <Rating
-                  emptySymbol={
-                    <FontAwesomeIcon
-                      icon={faStarE}
-                      size="xl"
-                      style={{ color: "#f7eb02" }}
-                    />
-                  }
-                  fullSymbol={
-                    <FontAwesomeIcon
-                      icon={faStarF}
-                      size="xl"
-                      style={{ color: "#f7eb02" }}
-                    />
-                  }
-                  placeholderSymbol={
-                    <FontAwesomeIcon
-                      icon={faStarF}
-                      size="xl"
-                      style={{ color: "#f7eb02" }}
-                    />
-                  }
-                  intialRating={cardRating}
-                  placeholderRating={cardRating}
-                  fractions={10}
-                  step={1}
-                  readonly
-                  quiet
-                />
-              </div>
-            </Row>
-            <Row>
-              <Card.Text>{cardText}</Card.Text>
-            </Row>
-          </Col>
-          <Col className="cartQuantity-div">
+            </div>
+
+            <Card.Text>{cardText}</Card.Text>
+
             <div className="quantity-div">
               <Button
                 id={cardItemId}
@@ -100,10 +176,10 @@ const CartItem = (props) => {
                 +
               </Button>
             </div>
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
+          </Card.Body>
+        </Card>
+      )}
+    </>
   );
 };
 
