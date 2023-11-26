@@ -18,14 +18,7 @@ import useWindowResize from "../useWindowResize";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquareCheck } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  getCountryCode,
-  countryNames,
-  stateAbbreviations,
-  dialingCodes,
-  months,
-  years,
-} from "../utils";
+import { countryNames, stateAbbreviations, months, years } from "../utils";
 
 import CustomNav from "../Components/CustomNav";
 
@@ -57,7 +50,7 @@ const CheckOut = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { width, height, findScreenSize } = useWindowResize();
+  const { width, findScreenSize } = useWindowResize();
 
   window.addEventListener("resize", () => {
     findScreenSize();
@@ -90,10 +83,10 @@ const CheckOut = () => {
     });
     for (let i = 0; i < cart.length; i++) {
       if (Number(cart[i].itemId) === Number(increaseId)) {
-        if (Number(cart[i].quantity + 1) != Number(oldCart[i].quantity)) {
+        if (Number(cart[i].quantity + 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
-      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+      } else if (Number(cart[i].quantity) !== Number(oldCart[i].quantity)) {
         difference = [...difference, true];
       } else {
         difference = [...difference, false];
@@ -131,17 +124,19 @@ const CheckOut = () => {
     const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(decreaseId)) {
-        if (cart.find((item) => item.itemId === oldItem.itemId).quantity != 0) {
+        if (
+          cart.find((item) => item.itemId === oldItem.itemId).quantity !== 0
+        ) {
           price = Number(price) - Number(oldItem.price);
         }
       }
     });
     for (let i = 0; i < cart.length; i++) {
       if (Number(cart[i].itemId) === Number(decreaseId)) {
-        if (Number(cart[i].quantity - 1) != Number(oldCart[i].quantity)) {
+        if (Number(cart[i].quantity - 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
-      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+      } else if (Number(cart[i].quantity) !== Number(oldCart[i].quantity)) {
         difference = [...difference, true];
       } else {
         difference = [...difference, false];
@@ -246,7 +241,7 @@ const CheckOut = () => {
                         {(deliveryName.length &&
                           street.length &&
                           country.length &&
-                          country != "United States Of America" &&
+                          country !== "United States Of America" &&
                           city.length &&
                           postalCode.length === 5) ||
                         (deliveryName.length &&
@@ -302,7 +297,8 @@ const CheckOut = () => {
                                 onChange={(e) => {
                                   setCountry(e.target.value);
                                   if (
-                                    e.target.value != "United States Of America"
+                                    e.target.value !==
+                                    "United States Of America"
                                   ) {
                                     setState([]);
                                   }
@@ -402,7 +398,7 @@ const CheckOut = () => {
                           differentAddress &&
                           ((billingStreet.length &&
                             billingCountry.length &&
-                            billingCountry != "United States Of America" &&
+                            billingCountry !== "United States Of America" &&
                             billingCity.length &&
                             billingPostalCode.length === 5) ||
                             (billingStreet.length &&
@@ -544,7 +540,7 @@ const CheckOut = () => {
                                     onChange={(e) => {
                                       setBillingCountry(e.target.value);
                                       if (
-                                        e.target.value !=
+                                        e.target.value !==
                                         "United States Of America"
                                       ) {
                                         setBillingState([]);
@@ -726,7 +722,7 @@ const CheckOut = () => {
                     {((deliveryName.length &&
                       street.length &&
                       country.length &&
-                      country != "United States Of America" &&
+                      country !== "United States Of America" &&
                       city.length &&
                       postalCode.length === 5) ||
                       (deliveryName.length &&
@@ -749,7 +745,7 @@ const CheckOut = () => {
                         differentAddress &&
                         ((billingStreet.length &&
                           billingCountry.length &&
-                          billingCountry != "United States Of America" &&
+                          billingCountry !== "United States Of America" &&
                           billingCity.length &&
                           billingPostalCode.length === 5) ||
                           (billingStreet.length &&
@@ -800,7 +796,7 @@ const CheckOut = () => {
                   {((deliveryName.length &&
                     street.length &&
                     country.length &&
-                    country != "United States Of America" &&
+                    country !== "United States Of America" &&
                     city.length &&
                     postalCode.length === 5) ||
                     (deliveryName.length &&
@@ -823,7 +819,7 @@ const CheckOut = () => {
                       differentAddress &&
                       ((billingStreet.length &&
                         billingCountry.length &&
-                        billingCountry != "United States Of America" &&
+                        billingCountry !== "United States Of America" &&
                         billingCity.length &&
                         billingPostalCode.length === 5) ||
                         (billingStreet.length &&
@@ -867,7 +863,7 @@ const CheckOut = () => {
                       {(deliveryName.length &&
                         street.length &&
                         country.length &&
-                        country != "United States Of America" &&
+                        country !== "United States Of America" &&
                         city.length &&
                         postalCode.length === 5) ||
                       (deliveryName.length &&
@@ -921,7 +917,7 @@ const CheckOut = () => {
                               onChange={(e) => {
                                 setCountry(e.target.value);
                                 if (
-                                  e.target.value != "United States Of America"
+                                  e.target.value !== "United States Of America"
                                 ) {
                                   setState([]);
                                 }
@@ -1021,7 +1017,7 @@ const CheckOut = () => {
                         differentAddress &&
                         ((billingStreet.length &&
                           billingCountry.length &&
-                          billingCountry != "United States Of America" &&
+                          billingCountry !== "United States Of America" &&
                           billingCity.length &&
                           billingPostalCode.length === 5) ||
                           (billingStreet.length &&
@@ -1160,7 +1156,7 @@ const CheckOut = () => {
                                   onChange={(e) => {
                                     setBillingCountry(e.target.value);
                                     if (
-                                      e.target.value !=
+                                      e.target.value !==
                                       "United States Of America"
                                     ) {
                                       setBillingState([]);

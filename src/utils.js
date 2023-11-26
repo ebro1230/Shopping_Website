@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const getCountryCode = (country) => {
   let countryCode = "";
   switch (country) {

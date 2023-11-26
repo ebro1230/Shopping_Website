@@ -58,8 +58,8 @@ const ProductPage = (props) => {
                           style={{ color: "#f7eb02" }}
                         />
                       }
-                      intialRating={product.rating.rate}
-                      placeholderRating={product.rating.rate}
+                      intialRating={product.rating}
+                      placeholderRating={product.rating}
                       fractions={10}
                       step={1}
                       readonly
@@ -111,8 +111,8 @@ const ProductPage = (props) => {
                     style={{ color: "#f7eb02" }}
                   />
                 }
-                intialRating={product.rating.rate}
-                placeholderRating={product.rating.rate}
+                intialRating={product.rating}
+                placeholderRating={product.rating}
                 fractions={10}
                 step={1}
                 readonly

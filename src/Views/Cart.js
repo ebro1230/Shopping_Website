@@ -56,10 +56,10 @@ const Cart = () => {
     });
     for (let i = 0; i < cart.length; i++) {
       if (Number(cart[i].itemId) === Number(increaseId)) {
-        if (Number(cart[i].quantity + 1) != Number(oldCart[i].quantity)) {
+        if (Number(cart[i].quantity + 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
-      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+      } else if (Number(cart[i].quantity) !== Number(oldCart[i].quantity)) {
         difference = [...difference, true];
       } else {
         difference = [...difference, false];
@@ -97,17 +97,19 @@ const Cart = () => {
     const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(decreaseId)) {
-        if (cart.find((item) => item.itemId === oldItem.itemId).quantity != 0) {
+        if (
+          cart.find((item) => item.itemId === oldItem.itemId).quantity !== 0
+        ) {
           price = Number(price) - Number(oldItem.price);
         }
       }
     });
     for (let i = 0; i < cart.length; i++) {
       if (Number(cart[i].itemId) === Number(decreaseId)) {
-        if (Number(cart[i].quantity - 1) != Number(oldCart[i].quantity)) {
+        if (Number(cart[i].quantity - 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
-      } else if (Number(cart[i].quantity) != Number(oldCart[i].quantity)) {
+      } else if (Number(cart[i].quantity) !== Number(oldCart[i].quantity)) {
         difference = [...difference, true];
       } else {
         difference = [...difference, false];

@@ -5,6 +5,7 @@ import Cart from "./Views/Cart";
 import ProductPage from "./Views/ProductPage";
 import CheckOut from "./Views/CheckOut";
 import Category from "./Views/Category";
+import AddProductPage from "./Views/AddProductPage";
 
 // import "./App.css";
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
         <Route path="/category/:category" element={<Category />} />
         <Route path="/product/:productId" element={<ProductPage />} />
         <Route path="/checkout" element={<CheckOut />} />
+        <Route path="/product/newproduct" element={<AddProductPage />} />
       </Routes>
     </>
   );

@@ -295,3 +295,15 @@ code {
 .spacing-div{
   margin-right:1rem;
 }
+.newProduct-div{
+  margin:1rem 4rem 0 4rem;
+  padding:1rem 4rem 0 4rem;
+}
+.newProductTitle{
+  text-align: center;
+  text-decoration: underline;
+}
+.createProductButton-div{
+  display:flex;
+  justify-content: center;
+}
