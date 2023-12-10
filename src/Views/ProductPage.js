@@ -36,17 +36,20 @@ const ProductPage = () => {
     setIsLoading(true);
     findScreenSize();
     axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}api/product/${productId}`)
+      .get(`https://fakestoreapi.com/products/${productId}`)
+      //.get(`${process.env.REACT_APP_BACKEND_URL}api/product/${productId}`)
       .then((response) => {
         console.log(response);
         setProduct({
           category: response.data.category,
           description: response.data.description,
           id: response.data._id,
-          itemId: response.data._id,
+          //itemId: response.data._id,
+          itemId: response.data.id,
           image: response.data.image,
           price: response.data.price.toFixed(2),
-          rating: Number(response.data.rating),
+          //rating: Number(response.data.rating),
+          rating: Number(response.data.rating.rate),
           title: response.data.title,
           quantity: 0,
         });

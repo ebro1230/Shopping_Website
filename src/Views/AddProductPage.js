@@ -12,10 +12,10 @@ const AddProductPage = (props) => {
   const [category, setCategory] = useState([]);
   const [description, setDescription] = useState([]);
   const [price, setPrice] = useState([]);
-  const [rating, setRating] = useState([]);
+  const [rating, setRating] = useState("");
   const [image, setImage] = useState([]);
   const [newProductSuccess, setNewProductSuccess] = useState(false);
-
+  console.log(rating);
   const handleNewProductSubmit = (e) => {
     e.preventDefault();
     // console.log(
@@ -144,19 +144,19 @@ const AddProductPage = (props) => {
               <Form.Label>*Rating:</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="1-5"
+                placeholder="0-5"
                 name="rating"
                 value={rating}
                 onChange={(e) => {
                   if (
                     numberValidation.test(e.target.value) ||
-                    e.target.value == 0
+                    e.target.value === ""
                   ) {
-                    if (e.target.value >= 1 && e.target.value <= 5) {
-                      setRating(e.target.value);
+                    if (e.target.value >= 0 && e.target.value <= 5) {
+                      setRating(e.target.value.slice(0, 1));
                     }
-                    if (Number(e.target.value) == 0) {
-                      setRating([]);
+                    if (Number(e.target.value) === "") {
+                      setRating("");
                     }
                   }
                 }}

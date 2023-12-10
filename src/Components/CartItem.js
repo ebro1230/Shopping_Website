@@ -24,7 +24,7 @@ const CartItem = (props) => {
 
   return (
     <>
-      {width >= 745 ? (
+      {width >= 1074 ? (
         <Card key={cardItemId}>
           <Card.Body className="cartItemCard-div">
             <Row>
@@ -110,72 +110,74 @@ const CartItem = (props) => {
       ) : (
         <Card key={cardItemId}>
           <Card.Body className="cartItemCard-div">
-            <Card.Img
-              variant="top"
-              src={cardImage}
-              data-itemid={cardItemId}
-              onClick={props.onItemClick}
-            />
-
-            <Card.Title
-              className="cartItemTitle-div"
-              data-itemid={cardItemId}
-              onClick={props.onItemClick}
-            >
-              {cardTitle}
-            </Card.Title>
-
-            <div className="card-rating">
-              <Rating
-                emptySymbol={
-                  <FontAwesomeIcon
-                    icon={faStarE}
-                    size="xl"
-                    style={{ color: "#f7eb02" }}
-                  />
-                }
-                fullSymbol={
-                  <FontAwesomeIcon
-                    icon={faStarF}
-                    size="xl"
-                    style={{ color: "#f7eb02" }}
-                  />
-                }
-                placeholderSymbol={
-                  <FontAwesomeIcon
-                    icon={faStarF}
-                    size="xl"
-                    style={{ color: "#f7eb02" }}
-                  />
-                }
-                intialRating={cardRating}
-                placeholderRating={cardRating}
-                fractions={10}
-                step={1}
-                readonly
-                quiet
+            <Col className>
+              <Card.Img
+                variant="top"
+                src={cardImage}
+                data-itemid={cardItemId}
+                onClick={props.onItemClick}
               />
-            </div>
 
-            <Card.Text>{cardText}</Card.Text>
+              <Card.Title
+                className="cartItemTitle-div"
+                data-itemid={cardItemId}
+                onClick={props.onItemClick}
+              >
+                {cardTitle}
+              </Card.Title>
 
-            <div className="quantity-div">
-              <Button
-                id={cardItemId}
-                onClick={props.onMinus}
-                data-quantity={cardQuantity}
-              >
-                -
-              </Button>
-              <p>Quantity: {cardQuantity}</p>
-              <Button
-                id={cardItemId}
-                onClick={props.onPlus}
-                data-quantity={cardQuantity}
-              >
-                +
-              </Button>
-            </div>
+              <div className="card-rating">
+                <Rating
+                  emptySymbol={
+                    <FontAwesomeIcon
+                      icon={faStarE}
+                      size="xl"
+                      style={{ color: "#f7eb02" }}
+                    />
+                  }
+                  fullSymbol={
+                    <FontAwesomeIcon
+                      icon={faStarF}
+                      size="xl"
+                      style={{ color: "#f7eb02" }}
+                    />
+                  }
+                  placeholderSymbol={
+                    <FontAwesomeIcon
+                      icon={faStarF}
+                      size="xl"
+                      style={{ color: "#f7eb02" }}
+                    />
+                  }
+                  intialRating={cardRating}
+                  placeholderRating={cardRating}
+                  fractions={10}
+                  step={1}
+                  readonly
+                  quiet
+                />
+              </div>
+
+              <Card.Text>{cardText}</Card.Text>
+
+              <div className="quantity-div">
+                <Button
+                  id={cardItemId}
+                  onClick={props.onMinus}
+                  data-quantity={cardQuantity}
+                >
+                  -
+                </Button>
+                <p>Quantity: {cardQuantity}</p>
+                <Button
+                  id={cardItemId}
+                  onClick={props.onPlus}
+                  data-quantity={cardQuantity}
+                >
+                  +
+                </Button>
+              </div>
+            </Col>
           </Card.Body>
         </Card>
       )}
