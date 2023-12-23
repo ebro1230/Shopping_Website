@@ -307,3 +307,13 @@ code {
   display:flex;
   justify-content: center;
 }
+.login-div{
+  display:flex;
+  justify-content: center;
+  margin-top: 5rem;
+}
+.submitButton-div{
+  display:flex;
+  justify-content: center;
+  margin-top: 2rem;
+}

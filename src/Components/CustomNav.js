@@ -7,6 +7,7 @@ import Image from "react-bootstrap/Image";
 import Badge from "react-bootstrap/Badge";
 import { LinkContainer } from "react-router-bootstrap";
 import shopping_cart from "../Images/shopping-cart.png";
+import login from "../Images/Login.png";
 
 function CustomNav(props) {
   const cart = props.cart;
@@ -70,6 +71,11 @@ function CustomNav(props) {
                         {cart.length}
                       </Badge>
                     ) : null}
+                  </Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/login" state={{ oldCart: { cart } }}>
+                  <Nav.Link className="shoppingCart-div">
+                    <Image src={login} roundedCircle fluid />
                   </Nav.Link>
                 </LinkContainer>
               </Nav>
