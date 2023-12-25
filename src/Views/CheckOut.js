@@ -58,16 +58,26 @@ const CheckOut = () => {
 
   useEffect(() => {
     findScreenSize();
-    if (location.state) {
-      setCart(location.state.oldCart.cart);
-      setOldCart(location.state.oldCart.cart);
+    if (sessionStorage.getItem("oldCart")) {
+      setCart(JSON.parse(sessionStorage.getItem("oldCart")));
+      setOldCart(JSON.parse(sessionStorage.getItem("oldCart")));
       let price = 0;
-      location.state.oldCart.cart.forEach((item) => {
+      JSON.parse(sessionStorage.getItem("oldCart")).forEach((item) => {
         price = price + Number(item.quantity) * Number(item.price);
       });
       setCartPrice(price);
       setNewCartPrice(price);
     }
+    // if (location.state) {
+    //   setCart(location.state.oldCart.cart);
+    //   setOldCart(location.state.oldCart.cart);
+    //   let price = 0;
+    //   location.state.oldCart.cart.forEach((item) => {
+    //     price = price + Number(item.quantity) * Number(item.price);
+    //   });
+    //   setCartPrice(price);
+    //   setNewCartPrice(price);
+    // }
   }, []);
 
   const handleOnPlus = (e) => {
@@ -167,7 +177,10 @@ const CheckOut = () => {
 
   const handleReturntoShopping = (e) => {
     e.preventDefault();
-    navigate("/", { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/`);
+    // navigate(`/`, { state: { oldCart: { cart } } });
   };
 
   const handleEmptyCart = (e) => {
@@ -207,7 +220,10 @@ const CheckOut = () => {
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/product/${productId}`);
+    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (

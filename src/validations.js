@@ -5,8 +5,7 @@ const passwordTest = (password) => {
 };
 
 const emailTest = (email) => {
-  const emailRequirements =
-    /^(?!.*[A-Z0-9.%+-]+@[A-Z0-9.-]+.[A-Z]{2,})([a-z0-9.%+-]+@[a-z0-9.-]+.[a-z]{2,})$/;
+  const emailRequirements = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
   return emailRequirements.test(email);
 };
 

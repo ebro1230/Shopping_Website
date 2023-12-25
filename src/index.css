@@ -317,3 +317,7 @@ code {
   justify-content: center;
   margin-top: 2rem;
 }
+.addItemButton-div {
+  display:flex;
+  justify-content: end;
+}

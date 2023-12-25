@@ -38,9 +38,12 @@ const HomePage = () => {
             });
           })
         );
-        if (location.state) {
-          const { oldCart } = location.state;
-          setCart(oldCart.cart);
+        // if (location.state) {
+        //   const { oldCart } = location.state;
+        //   setCart(oldCart.cart);
+        // }
+        if (sessionStorage.getItem("oldCart")) {
+          setCart(JSON.parse(sessionStorage.getItem("oldCart")));
         }
       })
       .catch((error) => {
@@ -149,7 +152,10 @@ const HomePage = () => {
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    navigate(`product/${productId}`, { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/product/${productId}`);
+    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (

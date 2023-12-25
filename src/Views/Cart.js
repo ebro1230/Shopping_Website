@@ -31,16 +31,29 @@ const Cart = () => {
 
   useEffect(() => {
     findScreenSize();
-    if (location.state) {
-      setCart(location.state.oldCart.cart);
-      setOldCart(location.state.oldCart.cart);
+    if (sessionStorage.getItem("oldCart")) {
+      setCart(JSON.parse(sessionStorage.getItem("oldCart")));
+      setOldCart(JSON.parse(sessionStorage.getItem("oldCart")));
       let price = 0;
-      location.state.oldCart.cart.forEach((item) => {
+      console.log(JSON.parse(sessionStorage.getItem("oldCart")));
+      let x = JSON.parse(sessionStorage.getItem("oldCart"));
+      console.log(x);
+      JSON.parse(sessionStorage.getItem("oldCart")).forEach((item) => {
         price = price + Number(item.quantity) * Number(item.price);
       });
       setCartPrice(price);
       setNewCartPrice(price);
     }
+    // if (location.state) {
+    //   setCart(location.state.oldCart.cart);
+    //   setOldCart(location.state.oldCart.cart);
+    //   let price = 0;
+    //   location.state.oldCart.cart.forEach((item) => {
+    //     price = price + Number(item.quantity) * Number(item.price);
+    //   });
+    //   setCartPrice(price);
+    //   setNewCartPrice(price);
+    // }
   }, []);
 
   const handleOnPlus = (e) => {
@@ -140,7 +153,10 @@ const Cart = () => {
 
   const handleReturntoShopping = (e) => {
     e.preventDefault();
-    navigate("/", { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/`);
+    // navigate(`/`, { state: { oldCart: { cart } } });
   };
 
   const handleUpdate = (e) => {
@@ -162,7 +178,10 @@ const Cart = () => {
 
   const handleProceedToCheckOut = (e) => {
     e.preventDefault();
-    navigate(`/checkout`, { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/checkout`);
+    // navigate(`/checkout`, { state: { oldCart: { cart } } });
   };
 
   const handleEmptyCart = (e) => {
@@ -175,7 +194,10 @@ const Cart = () => {
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/product/${productId}`);
+    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { InputGroup, FormControl, Button } from "react-bootstrap";
 import { Form, Modal } from "react-bootstrap";
+import CustomNav from "../Components/CustomNav";
 
 const AddProductPage = (props) => {
   const navigate = useNavigate();
@@ -15,25 +16,11 @@ const AddProductPage = (props) => {
   const [rating, setRating] = useState("");
   const [image, setImage] = useState([]);
   const [newProductSuccess, setNewProductSuccess] = useState(false);
-  console.log(rating);
+  const oldCart = JSON.parse(sessionStorage.getItem("oldCart"));
+  const cart = oldCart;
+
   const handleNewProductSubmit = (e) => {
     e.preventDefault();
-    // console.log(
-    //   `Title: ${title}, Category: ${category}, Description: ${description}, Price: ${Number(
-    //     price.substring(1)
-    //   ).toFixed(2)}, Rating: ${Number(rating)}, Image: ${image}`
-    // );
-    // console.log(image);
-    // setNewProductSuccess(true);
-    // setTitle([]);
-    // setCategory([]);
-    // setDescription([]);
-    // setPrice([]);
-    // setRating([]);
-    // setImage([]);
-    // setTimeout(() => {
-    //   setNewProductSuccess(false);
-    // }, 3000);
 
     let formData = new FormData();
     formData.append("title", title);
@@ -54,7 +41,7 @@ const AddProductPage = (props) => {
         }
       )
       .then((response) => {
-        console.log(response.data); // log the newly created event object
+        console.log(response.data); // log the newly created product
       })
       .catch((error) => {
         console.error(error);
@@ -74,130 +61,120 @@ const AddProductPage = (props) => {
   };
 
   return (
-    <div className="newProduct-div">
-      {newProductSuccess ? (
-        <Modal show={true} centered>
-          <Modal.Header>
-            <Modal.Title>Successfully Added New Product</Modal.Title>
-          </Modal.Header>
-        </Modal>
-      ) : (
-        <>
-          <h3 className="newProductTitle">Add New Product:</h3>
-          <Form onSubmit={handleNewProductSubmit}>
-            <Form.Group controlId="title">
-              <Form.Label>*Title:</Form.Label>
-              <Form.Control
-                type="text"
-                name="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>*Category:</Form.Label>
-              <Form.Control
-                type="text"
-                name="category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>*Description:</Form.Label>
-              <Form.Control
-                type="text"
-                name="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>*Price:</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="$0.00"
-                name="price"
-                value={price}
-                onChange={(e) => {
-                  if (
-                    priceValidation.test(e.target.value) ||
-                    ((price == 0 || e.target.value === "$") &&
-                      numberValidation.test(e.target.value))
-                  ) {
-                    if (e.target.value === "$") {
-                      setPrice([]);
-                    } else if (e.target.value.slice(0, 1) === "$") {
-                      setPrice(e.target.value);
-                    } else {
-                      setPrice("$" + e.target.value);
+    <>
+      <CustomNav cart={cart} />
+      <div className="newProduct-div">
+        {newProductSuccess ? (
+          <Modal show={true} centered>
+            <Modal.Header>
+              <Modal.Title>Successfully Added New Product</Modal.Title>
+            </Modal.Header>
+          </Modal>
+        ) : (
+          <>
+            <h3 className="newProductTitle">Add New Product:</h3>
+            <Form onSubmit={handleNewProductSubmit}>
+              <Form.Group controlId="title">
+                <Form.Label>*Title:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>*Category:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>*Description:</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>*Price:</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="$0.00"
+                  name="price"
+                  value={price}
+                  onChange={(e) => {
+                    if (
+                      priceValidation.test(e.target.value) ||
+                      ((price == 0 || e.target.value === "$") &&
+                        numberValidation.test(e.target.value))
+                    ) {
+                      if (e.target.value === "$") {
+                        setPrice([]);
+                      } else if (e.target.value.slice(0, 1) === "$") {
+                        setPrice(e.target.value);
+                      } else {
+                        setPrice("$" + e.target.value);
+                      }
                     }
-                  }
-                }}
-                required
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>*Rating:</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="0-5"
-                name="rating"
-                value={rating}
-                onChange={(e) => {
-                  if (
-                    numberValidation.test(e.target.value) ||
-                    e.target.value === ""
-                  ) {
-                    if (e.target.value >= 0 && e.target.value <= 5) {
-                      setRating(e.target.value.slice(0, 1));
+                  }}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>*Rating:</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="0-5"
+                  name="rating"
+                  value={rating}
+                  onChange={(e) => {
+                    if (
+                      numberValidation.test(e.target.value) ||
+                      e.target.value === ""
+                    ) {
+                      if (e.target.value >= 0 && e.target.value <= 5) {
+                        setRating(e.target.value.slice(0, 1));
+                      }
+                      if (Number(e.target.value) === "") {
+                        setRating("");
+                      }
                     }
-                    if (Number(e.target.value) === "") {
-                      setRating("");
-                    }
-                  }
-                }}
-                required
-              />
-            </Form.Group>
-            {/* <Form.Group controlId="userCountry">
-        <Form.Label>*Country:</Form.Label>
-        <Form.Select
-          value={newCountry}
-          onChange={props.onCountryChange}
-          required
-        >
-          {countryNames.map((countryName) => {
-            return <option key={countryName}>{countryName}</option>;
-          })}
-        </Form.Select>
-      </Form.Group> */}
-
-            <Form.Group>
-              <Form.Label>*Product Image:</Form.Label>
-              <Form.Control
-                type="file"
-                name="image"
-                onChange={(e) => setImage(e.target.files[0])}
-                required
-              />
-              <Form.Text className="text-muted">
-                Please select an image to upload.
-              </Form.Text>
-            </Form.Group>
-            <p style={{ fontSize: "smaller" }}>* = Required Field</p>
-            <div className="createProductButton-div">
-              <Button className="submit-button" type="submit">
-                Create Product
-              </Button>
-            </div>
-          </Form>
-        </>
-      )}
-    </div>
+                  }}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>*Product Image:</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="image"
+                  onChange={(e) => setImage(e.target.files[0])}
+                  required
+                />
+                <Form.Text className="text-muted">
+                  Please select an image to upload.
+                </Form.Text>
+              </Form.Group>
+              <p style={{ fontSize: "smaller" }}>* = Required Field</p>
+              <div className="createProductButton-div">
+                <Button className="submit-button" type="submit">
+                  Create Product
+                </Button>
+              </div>
+            </Form>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

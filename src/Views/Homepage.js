@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { Button } from "react-bootstrap";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +15,10 @@ const HomePage = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
+  const [customerType, setCustomerType] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const userType = sessionStorage.getItem("userType");
 
   useEffect(() => {
     setIsLoading(true);
@@ -37,9 +40,12 @@ const HomePage = () => {
             });
           })
         );
-        if (location.state) {
-          const { oldCart } = location.state;
-          setCart(oldCart.cart);
+        // if (location.state) {
+        //   const { oldCart } = location.state;
+        //   setCart(oldCart.cart);
+        // }
+        if (sessionStorage.getItem("oldCart")) {
+          setCart(JSON.parse(sessionStorage.getItem("oldCart")));
         }
       })
       .catch((error) => {
@@ -143,12 +149,23 @@ const HomePage = () => {
         }
       })
     );
+    const oldCart = cart;
+    console.log(oldCart);
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
   };
 
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    navigate(`product/${productId}`, { state: { oldCart: { cart } } });
+    const oldCart = cart;
+    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    navigate(`/product/${productId}`);
+    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
+  };
+
+  const handleAddItem = (e) => {
+    e.preventDefault();
+    navigate("/product/newproduct");
   };
 
   return (
@@ -160,26 +177,45 @@ const HomePage = () => {
             <LoadingIndicator />
           </div>
         ) : items.length ? (
-          <Row xs={1} md={2} lg={3} xl={4} className="g-4">
-            {items.map((item) => (
-              <Col key={item.id}>
-                <Item
-                  cardImage={item.image}
-                  cardTitle={item.title}
-                  cardRating={item.rating.rate}
-                  cardPrice={item.price}
-                  cardText={item.description}
-                  cardQuantity={item.quantity}
-                  cardId={item.id}
-                  cardItemId={item.itemId}
-                  onPlus={handleOnPlus}
-                  onMinus={handleOnMinus}
-                  onAddToCart={handleOnAddToCart}
-                  onItemClick={handleItemClick}
-                />
-              </Col>
-            ))}
-          </Row>
+          <>
+            {userType === "owner" ? (
+              <Row
+                xs={1}
+                md={2}
+                lg={3}
+                xl={4}
+                className="g-4 addItemButton-div"
+              >
+                <Button
+                  className="addItemButton"
+                  variant="primary"
+                  onClick={handleAddItem}
+                >
+                  Add Item
+                </Button>
+              </Row>
+            ) : null}
+            <Row xs={1} md={2} lg={3} xl={4} className="g-4">
+              {items.map((item) => (
+                <Col key={item.id}>
+                  <Item
+                    cardImage={item.image}
+                    cardTitle={item.title}
+                    cardRating={item.rating.rate}
+                    cardPrice={item.price}
+                    cardText={item.description}
+                    cardQuantity={item.quantity}
+                    cardId={item.id}
+                    cardItemId={item.itemId}
+                    onPlus={handleOnPlus}
+                    onMinus={handleOnMinus}
+                    onAddToCart={handleOnAddToCart}
+                    onItemClick={handleItemClick}
+                  />
+                </Col>
+              ))}
+            </Row>
+          </>
         ) : (
           <p>No Items Available</p>
         )}
