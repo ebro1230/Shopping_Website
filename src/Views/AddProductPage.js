@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { InputGroup, FormControl, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Form, Modal } from "react-bootstrap";
 import CustomNav from "../Components/CustomNav";
 
-const AddProductPage = (props) => {
+const AddProductPage = () => {
   const navigate = useNavigate();
   const numberValidation = /^[0-9]+$/;
   const priceValidation = /^\$[0-9]*(\.[0-9]{0,2})?$/;
@@ -16,12 +16,23 @@ const AddProductPage = (props) => {
   const [rating, setRating] = useState("");
   const [image, setImage] = useState([]);
   const [newProductSuccess, setNewProductSuccess] = useState(false);
-  const oldCart = JSON.parse(sessionStorage.getItem("oldCart"));
-  const cart = oldCart;
+  const [cart, setCart] = useState([]);
+  const [id, setId] = useState("");
+
+  useEffect(() => {
+    if (sessionStorage.getItem("userType") === "customer") {
+      navigate("/");
+    }
+    if (sessionStorage.getItem("oldCart")) {
+      setCart(JSON.parse(sessionStorage.getItem("oldCart")));
+    }
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
+    }
+  }, []);
 
   const handleNewProductSubmit = (e) => {
     e.preventDefault();
-
     let formData = new FormData();
     formData.append("title", title);
     formData.append("category", category);
@@ -29,7 +40,6 @@ const AddProductPage = (props) => {
     formData.append("price", Number(price.substring(1)).toFixed(2));
     formData.append("rating", Number(rating));
     formData.append("image", image);
-
     axios
       .post(
         `${process.env.REACT_APP_BACKEND_URL}api/product/newproduct`,
@@ -56,13 +66,14 @@ const AddProductPage = (props) => {
         setImage([]);
         setTimeout(() => {
           setNewProductSuccess(false);
+          navigate("/");
         }, 3000);
       });
   };
 
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} />
       <div className="newProduct-div">
         {newProductSuccess ? (
           <Modal show={true} centered>

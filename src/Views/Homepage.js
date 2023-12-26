@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Button } from "react-bootstrap";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import Item from "../Components/Item";
@@ -15,13 +13,22 @@ const HomePage = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
-  const [customerType, setCustomerType] = useState("");
-  const location = useLocation();
+  const [userType, setUserType] = useState("");
+  const [id, setId] = useState("");
   const navigate = useNavigate();
-  const userType = sessionStorage.getItem("userType");
+  console.log(cart);
 
   useEffect(() => {
     setIsLoading(true);
+    if (sessionStorage.getItem("oldCart")) {
+      setCart(JSON.parse(sessionStorage.getItem("oldCart")));
+    }
+    if (sessionStorage.getItem("userType")) {
+      setUserType(sessionStorage.getItem("userType"));
+    }
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
+    }
     axios
       .get(`https://fakestoreapi.com/products`)
       .then((response) => {
@@ -40,13 +47,6 @@ const HomePage = () => {
             });
           })
         );
-        // if (location.state) {
-        //   const { oldCart } = location.state;
-        //   setCart(oldCart.cart);
-        // }
-        if (sessionStorage.getItem("oldCart")) {
-          setCart(JSON.parse(sessionStorage.getItem("oldCart")));
-        }
       })
       .catch((error) => {
         console.log(error);
@@ -133,6 +133,31 @@ const HomePage = () => {
                 })
               : [...cart, item]
           );
+          sessionStorage.setItem(
+            "oldCart",
+            JSON.stringify(
+              cart.find((cartItem) => cartItem.id === item.id)
+                ? cart.map((cartItem) => {
+                    if (Number(cartItem.id) === Number(item.id)) {
+                      return (cartItem = {
+                        category: cartItem.category,
+                        description: cartItem.description,
+                        id: cartItem.id,
+                        itemId: cartItem.id,
+                        image: cartItem.image,
+                        price: cartItem.price,
+                        rating: cartItem.rating,
+                        title: cartItem.title,
+                        quantity:
+                          Number(cartItem.quantity) + Number(itemQuantity),
+                      });
+                    } else {
+                      return cartItem;
+                    }
+                  })
+                : [...cart, item]
+            )
+          );
           return (item = {
             category: item.category,
             description: item.description,
@@ -149,18 +174,13 @@ const HomePage = () => {
         }
       })
     );
-    const oldCart = cart;
-    console.log(oldCart);
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    //sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
   };
 
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/product/${productId}`);
-    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   const handleAddItem = (e) => {
@@ -168,9 +188,15 @@ const HomePage = () => {
     navigate("/product/newproduct");
   };
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    setId("");
+  };
+
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} onLogout={handleLogout} />
       <div className="items-container">
         {isLoading ? (
           <div className="loading-div">

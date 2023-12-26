@@ -23,24 +23,19 @@ const LoginPage = () => {
   const [existingEmail, setExistingEmail] = useState(false);
   const [incorrectPassword, setIncorrectPassword] = useState(false);
   const [incorrectEmail, setIncorrectEmail] = useState(false);
-  const id = sessionStorage.getItem("userId");
-  const location = useLocation();
+  const [id, setId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // if (location.state) {
-    //   const { oldCart } = location.state;
-    //   setCart(oldCart.cart);
-    // }
     if (sessionStorage.getItem("oldCart")) {
       setCart(JSON.parse(sessionStorage.getItem("oldCart")));
     }
-    if (id) {
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
       navigate("/");
     }
   }, []);
-
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     if (!emailTest(email.toLowerCase())) {
       setInvalidEmail(true);
@@ -71,7 +66,6 @@ const LoginPage = () => {
             setTimeout(() => {
               setSuccessfulLogin(false);
             }, 3000);
-            //Provide JWT Token
             sessionStorage.setItem("userId", response.data.response._id);
             sessionStorage.setItem("userType", response.data.response.userType);
             sessionStorage.setItem(
@@ -79,12 +73,10 @@ const LoginPage = () => {
               JSON.stringify(response.data.response.cart)
             );
             navigate(`/`);
-            //navigate(`/`, { state: { oldCart: { cart } } });
           }
         })
         .catch((error) => {
-          //if error is email not found, modal email does not exist (first if statement replace)
-          //if other error, display other error
+          console.log(error);
         })
         .finally(() => {
           setEmail("");
@@ -141,74 +133,40 @@ const LoginPage = () => {
                   .then((response) => {
                     console.log(response);
                     sessionStorage.setItem("userId", response.data._id);
-
                     sessionStorage.setItem("userType", response.data.userType);
-
                     sessionStorage.setItem(
                       "oldCart",
                       JSON.stringify(response.data.cart)
                     );
-                    setTimeout(() => {
-                      setSuccessfulSignUp(false);
-                    }, 3000);
-                  });
-              });
+                  }, 3000);
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => {
+                setTimeout(() => {
+                  setSuccessfulSignUp(false);
+                  setEmail("");
+                  setPassword("");
+                  setPasswordConfirm("");
+                  navigate(`/`);
+                });
+              })
+              .catch((error) => {
+                console.log(error);
+              })
+              .finally(() => {});
           }
-        });
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {});
     }
   };
-
-  //                 sessionStorage.setItem(
-  //                   "userId",
-  //                   JSON.stringify(JSON.parse(response.config.data)._id)
-  //                 );
-  //                 sessionStorage.setItem(
-  //                   "userType",
-  //                   JSON.stringify(JSON.parse(response.config.data).userType)
-  //                 );
-  //                 sessionStorage.setItem(
-  //                   "oldCart",
-  //                   JSON.stringify(JSON.parse(response.config.data).cart)
-  //                 );
-  //                 setTimeout(() => {
-  //                   setSuccessfulSignUp(false);
-  //                 }, 3000);
-
-  //                 //Provide JWT Token
-
-  //                 navigate(`/`);
-
-  //                 //navigate(`/`, { state: { oldCart: { cart } } });})
-
-  //               })
-  //               .catch((error) => {
-  //                 console.log(error);
-
-  //                 //Possibly means username doesn't exist and use the above code to create user
-
-  //               })
-  //               .finally(() => {
-  //                 setEmail("");
-  //                 setPassword("");
-  //               });
-  //           }
-  //         })
-  //         .catch((error) => {
-  //           console.log(error);
-
-  //           //Possibly means username doesn't exist and use the above code to create user
-
-  //         })
-  //         .finally(() => {
-  //           setEmail("ebro1230@gmail.com1");
-  //           setPassword("S!mple921");
-  //         });
-  //     }
-  //   };
-
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} />
       <div className="login-div">
         {invalidEmail ? (
           <Modal show={true} centered>

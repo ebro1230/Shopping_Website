@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import CartItem from "../Components/CartItem";
 import LoadingIndicator from "../Components/LoadingIndicator";
@@ -20,10 +19,11 @@ const Cart = () => {
   const [cartPrice, setCartPrice] = useState(0);
   const [newCartPrice, setNewCartPrice] = useState(0);
   const [quantityChange, setQuantityChange] = useState(false);
-  const location = useLocation();
+  const [id, setId] = useState("");
+  const [userType, setUserType] = useState("");
   const navigate = useNavigate();
 
-  const { width, height, findScreenSize } = useWindowResize();
+  const { width, findScreenSize } = useWindowResize();
 
   window.addEventListener("resize", () => {
     findScreenSize();
@@ -35,25 +35,18 @@ const Cart = () => {
       setCart(JSON.parse(sessionStorage.getItem("oldCart")));
       setOldCart(JSON.parse(sessionStorage.getItem("oldCart")));
       let price = 0;
-      console.log(JSON.parse(sessionStorage.getItem("oldCart")));
-      let x = JSON.parse(sessionStorage.getItem("oldCart"));
-      console.log(x);
       JSON.parse(sessionStorage.getItem("oldCart")).forEach((item) => {
         price = price + Number(item.quantity) * Number(item.price);
       });
       setCartPrice(price);
       setNewCartPrice(price);
     }
-    // if (location.state) {
-    //   setCart(location.state.oldCart.cart);
-    //   setOldCart(location.state.oldCart.cart);
-    //   let price = 0;
-    //   location.state.oldCart.cart.forEach((item) => {
-    //     price = price + Number(item.quantity) * Number(item.price);
-    //   });
-    //   setCartPrice(price);
-    //   setNewCartPrice(price);
-    // }
+    if (sessionStorage.getItem("userType")) {
+      setUserType(sessionStorage.getItem("userType"));
+    }
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
+    }
   }, []);
 
   const handleOnPlus = (e) => {
@@ -61,7 +54,6 @@ const Cart = () => {
     let price = Number(newCartPrice);
     let difference = [];
     const increaseId = e.target.id;
-    const increaseQuantity = Number(e.target.getAttribute("data-quantity")) + 1;
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(increaseId)) {
         price = Number(price) + Number(oldItem.price);
@@ -107,7 +99,6 @@ const Cart = () => {
     const decreaseId = e.target.id;
     let difference = [];
     let price = newCartPrice;
-    const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(decreaseId)) {
         if (
@@ -153,10 +144,7 @@ const Cart = () => {
 
   const handleReturntoShopping = (e) => {
     e.preventDefault();
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/`);
-    // navigate(`/`, { state: { oldCart: { cart } } });
   };
 
   const handleUpdate = (e) => {
@@ -171,38 +159,40 @@ const Cart = () => {
         return item.quantity > 0;
       })
     );
+    sessionStorage.setItem(
+      "oldCart",
+      JSON.stringify(
+        cart.filter((item) => {
+          return item.quantity > 0;
+        })
+      )
+    );
     setCartPrice(newCartPrice);
-
     setQuantityChange(false);
   };
 
   const handleProceedToCheckOut = (e) => {
     e.preventDefault();
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/checkout`);
-    // navigate(`/checkout`, { state: { oldCart: { cart } } });
   };
 
   const handleEmptyCart = (e) => {
     e.preventDefault();
     setCart([]);
     setOldCart([]);
+    sessionStorage.setItem("oldCart", []);
     setCartPrice(0);
   };
 
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/product/${productId}`);
-    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} />
       <div className="items-container">
         {isLoading ? (
           <div className="loading-div">
@@ -228,7 +218,7 @@ const Cart = () => {
                     <CartItem
                       cardImage={item.image}
                       cardTitle={item.title}
-                      cardRating={item.rating.rate}
+                      cardRating={item.rating}
                       cardPrice={item.price}
                       cardText={item.description}
                       cardQuantity={item.quantity}
@@ -283,7 +273,7 @@ const Cart = () => {
                   <CartItem
                     cardImage={item.image}
                     cardTitle={item.title}
-                    cardRating={item.rating.rate}
+                    cardRating={item.rating}
                     cardPrice={item.price}
                     cardText={item.description}
                     cardQuantity={item.quantity}

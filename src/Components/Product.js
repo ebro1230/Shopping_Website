@@ -35,6 +35,9 @@ const ProductPage = (props) => {
                   </Card.Title>
                 </Row>
                 <Row>
+                  <h3>${product.price}</h3>
+                </Row>
+                <Row>
                   <div className="card-rating">
                     <Rating
                       emptySymbol={

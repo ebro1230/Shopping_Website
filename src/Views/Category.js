@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from "react";
-import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { useParams, useNavigate } from "react-router";
 
 import Item from "../Components/Item";
 import LoadingIndicator from "../Components/LoadingIndicator";
 import CustomNav from "../Components/CustomNav";
 
-const HomePage = () => {
+const Category = () => {
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
-  const location = useLocation();
+  const [userType, setUserType] = useState("");
+  const [id, setId] = useState("");
   const navigate = useNavigate();
   let { category } = useParams();
 
   useEffect(() => {
     setIsLoading(true);
+    if (sessionStorage.getItem("oldCart")) {
+      setCart(JSON.parse(sessionStorage.getItem("oldCart")));
+    }
+    if (sessionStorage.getItem("userType")) {
+      setUserType(sessionStorage.getItem("userType"));
+    }
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
+    }
     axios
       .get(`https://fakestoreapi.com/products/category/${category}`)
       .then((response) => {
@@ -38,13 +46,6 @@ const HomePage = () => {
             });
           })
         );
-        // if (location.state) {
-        //   const { oldCart } = location.state;
-        //   setCart(oldCart.cart);
-        // }
-        if (sessionStorage.getItem("oldCart")) {
-          setCart(JSON.parse(sessionStorage.getItem("oldCart")));
-        }
       })
       .catch((error) => {
         console.log(error);
@@ -131,6 +132,31 @@ const HomePage = () => {
                 })
               : [...cart, item]
           );
+          sessionStorage.setItem(
+            "oldCart",
+            JSON.stringify(
+              cart.find((cartItem) => cartItem.id === item.id)
+                ? cart.map((cartItem) => {
+                    if (Number(cartItem.id) === Number(item.id)) {
+                      return (cartItem = {
+                        category: cartItem.category,
+                        description: cartItem.description,
+                        id: cartItem.id,
+                        itemId: cartItem.id,
+                        image: cartItem.image,
+                        price: cartItem.price,
+                        rating: cartItem.rating,
+                        title: cartItem.title,
+                        quantity:
+                          Number(cartItem.quantity) + Number(itemQuantity),
+                      });
+                    } else {
+                      return cartItem;
+                    }
+                  })
+                : [...cart, item]
+            )
+          );
           return (item = {
             category: item.category,
             description: item.description,
@@ -152,15 +178,12 @@ const HomePage = () => {
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/product/${productId}`);
-    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} />
       <div className="items-container">
         {isLoading ? (
           <div className="loading-div">
@@ -195,4 +218,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Category;

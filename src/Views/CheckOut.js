@@ -5,7 +5,6 @@ import Row from "react-bootstrap/Row";
 import Accordion from "react-bootstrap/Accordion";
 import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 
@@ -47,8 +46,9 @@ const CheckOut = () => {
   const [billingState, setBillingState] = useState([]);
   const [billingCity, setBillingCity] = useState([]);
   const [billingPostalCode, setBillingPostalCode] = useState([]);
-  const location = useLocation();
   const navigate = useNavigate();
+  const [userType, setUserType] = useState("");
+  const [id, setId] = useState("");
 
   const { width, findScreenSize } = useWindowResize();
 
@@ -68,16 +68,12 @@ const CheckOut = () => {
       setCartPrice(price);
       setNewCartPrice(price);
     }
-    // if (location.state) {
-    //   setCart(location.state.oldCart.cart);
-    //   setOldCart(location.state.oldCart.cart);
-    //   let price = 0;
-    //   location.state.oldCart.cart.forEach((item) => {
-    //     price = price + Number(item.quantity) * Number(item.price);
-    //   });
-    //   setCartPrice(price);
-    //   setNewCartPrice(price);
-    // }
+    if (sessionStorage.getItem("userType")) {
+      setUserType(sessionStorage.getItem("userType"));
+    }
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
+    }
   }, []);
 
   const handleOnPlus = (e) => {
@@ -85,7 +81,6 @@ const CheckOut = () => {
     let price = Number(newCartPrice);
     let difference = [];
     const increaseId = e.target.id;
-    const increaseQuantity = Number(e.target.getAttribute("data-quantity")) + 1;
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(increaseId)) {
         price = Number(price) + Number(oldItem.price);
@@ -124,6 +119,28 @@ const CheckOut = () => {
         }
       })
     );
+    sessionStorage.setItem(
+      "oldCart",
+      JSON.stringify(
+        cart.map((item) => {
+          if (Number(item.itemId) === Number(increaseId)) {
+            return (item = {
+              category: item.category,
+              description: item.description,
+              id: item.id,
+              itemId: item.itemId,
+              image: item.image,
+              price: item.price,
+              rating: item.rating,
+              title: item.title,
+              quantity: item.quantity === 0 ? 0 : item.quantity - 1,
+            });
+          } else {
+            return item;
+          }
+        })
+      )
+    );
   };
 
   const handleOnMinus = (e) => {
@@ -131,7 +148,6 @@ const CheckOut = () => {
     const decreaseId = e.target.id;
     let difference = [];
     let price = newCartPrice;
-    const decreaseQuantity = Number(e.target.getAttribute("data-quantity")) - 1;
     oldCart.forEach((oldItem) => {
       if (Number(oldItem.itemId) === Number(decreaseId)) {
         if (
@@ -173,20 +189,40 @@ const CheckOut = () => {
         }
       })
     );
+    sessionStorage.setItem(
+      "oldCart",
+      JSON.stringify(
+        cart.map((item) => {
+          if (Number(item.itemId) === Number(decreaseId)) {
+            return (item = {
+              category: item.category,
+              description: item.description,
+              id: item.id,
+              itemId: item.itemId,
+              image: item.image,
+              price: item.price,
+              rating: item.rating,
+              title: item.title,
+              quantity: item.quantity === 0 ? 0 : item.quantity - 1,
+            });
+          } else {
+            return item;
+          }
+        })
+      )
+    );
   };
 
   const handleReturntoShopping = (e) => {
     e.preventDefault();
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/`);
-    // navigate(`/`, { state: { oldCart: { cart } } });
   };
 
   const handleEmptyCart = (e) => {
     e.preventDefault();
     setCart([]);
     setOldCart([]);
+    sessionStorage.setItem("oldCart", []);
     setCartPrice(0);
   };
 
@@ -195,8 +231,10 @@ const CheckOut = () => {
     setPaymentSuccess(true);
     setTimeout(() => {
       setPaymentSuccess(false);
+      navigate("/");
     }, 3000);
     setCart([]);
+    sessionStorage.setItem("oldCart", []);
     setCartPrice(0);
   };
 
@@ -212,23 +250,27 @@ const CheckOut = () => {
         return item.quantity > 0;
       })
     );
+    sessionStorage.setItem(
+      "oldCart",
+      JSON.stringify(
+        cart.filter((item) => {
+          return item.quantity > 0;
+        })
+      )
+    );
     setCartPrice(newCartPrice);
-
     setQuantityChange(false);
   };
 
   const handleItemClick = (e) => {
     e.preventDefault();
     const productId = Number(e.target.getAttribute("data-itemid"));
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/product/${productId}`);
-    // navigate(`/product/${productId}`, { state: { oldCart: { cart } } });
   };
 
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} />
 
       {paymentSuccess ? (
         <Modal show={true} centered>

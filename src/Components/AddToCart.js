@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 
@@ -7,25 +7,6 @@ const AddToCart = (props) => {
   return (
     <Card>
       <Card.Body className="addToCheckOut-div">
-        {/* <Card.Title className="cartTitle-div">Cart:</Card.Title>
-        <Card.Text className="cartPrice-div">${cartPrice.toFixed(2)}</Card.Text>
-        {cartPrice ? (
-          <div className="cartButtons-div">
-            <Button className="cartButton" onClick={props.onProceedToCheckOut}>
-              Proceed to Checkout
-            </Button>
-            <Button className="cartButton" onClick={props.onEmptyCart}>
-              Empty Cart
-            </Button>
-            <Button
-              className="cartButton"
-              variant="warning"
-              onClick={props.onReturn}
-            >
-              Continue Shopping
-            </Button>
-          </div>
-        ) : ( */}
         <div className="quantity-div">
           <Button id={product.itemId} onClick={props.onMinus}>
             -
@@ -58,7 +39,6 @@ const AddToCart = (props) => {
             Continue Shopping
           </Button>
         </div>
-        {/* )} */}
       </Card.Body>
     </Card>
   );

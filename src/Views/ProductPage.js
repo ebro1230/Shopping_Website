@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import Rating from "react-rating";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { useParams, useNavigate } from "react-router-dom";
 import useWindowResize from "../useWindowResize";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar as faStarF } from "@fortawesome/free-solid-svg-icons";
-import { faStar as faStarE } from "@fortawesome/free-regular-svg-icons";
 
 import LoadingIndicator from "../Components/LoadingIndicator";
 import CustomNav from "../Components/CustomNav";
@@ -25,10 +19,10 @@ const ProductPage = () => {
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [cart, setCart] = useState([]);
-  const location = useLocation();
   const navigate = useNavigate();
-  const userType = sessionStorage.getItem("userType");
-  const { width, height, findScreenSize } = useWindowResize();
+  const [userType, setUserType] = useState("");
+  const [id, setId] = useState("");
+  const { width, findScreenSize } = useWindowResize();
 
   const numberValidation = /^[0-9]+$/;
   const priceValidation = /^\$[0-9]*(\.[0-9]{0,2})?$/;
@@ -43,8 +37,18 @@ const ProductPage = () => {
   const [productUpdated, setProductUpdated] = useState(0);
   const [productDeleteSuccess, setProductDeletedSuccess] = useState(false);
 
+  console.log(image);
   useEffect(() => {
     setIsLoading(true);
+    if (sessionStorage.getItem("oldCart")) {
+      setCart(JSON.parse(sessionStorage.getItem("oldCart")));
+    }
+    if (sessionStorage.getItem("userType")) {
+      setUserType(sessionStorage.getItem("userType"));
+    }
+    if (sessionStorage.getItem("userId")) {
+      setId(sessionStorage.getItem("userId"));
+    }
     findScreenSize();
     axios
       .get(`https://fakestoreapi.com/products/${productId}`)
@@ -67,17 +71,10 @@ const ProductPage = () => {
         setTitle(response.data.title);
         setCategory(response.data.category);
         setDescription(response.data.description);
-        setPrice(response.data.price);
+        setPrice("$" + response.data.price);
         //setRating(response.data.rating);
         setRating(response.data.rating.rate);
         setImage(response.data.image);
-        // if (location.state) {
-        //   const { oldCart } = location.state;
-        //   setCart(oldCart.cart);
-        // }
-        if (sessionStorage.getItem("oldCart")) {
-          setCart(JSON.parse(sessionStorage.getItem("oldCart")));
-        }
       })
       .catch((error) => {
         console.log(error);
@@ -111,7 +108,6 @@ const ProductPage = () => {
   };
   const handleUpdateProductSubmit = (e) => {
     e.preventDefault();
-
     let formData = new FormData();
     formData.append("title", title);
     formData.append("category", category);
@@ -119,7 +115,6 @@ const ProductPage = () => {
     formData.append("price", Number(price.substring(1)).toFixed(2));
     formData.append("rating", Number(rating));
     formData.append("image", image);
-
     axios
       .put(
         `${process.env.REACT_APP_BACKEND_URL}api/product/${productId}`,
@@ -131,23 +126,17 @@ const ProductPage = () => {
         }
       )
       .then((response) => {
-        console.log(response.data); // log the newly created product
+        console.log(response.data);
       })
       .catch((error) => {
         console.error(error);
       })
       .finally(() => {
         setUpdateProductSuccess(true);
-        setTitle([]);
-        setCategory([]);
-        setDescription([]);
-        setPrice([]);
-        setRating([]);
-        setImage([]);
         setTimeout(() => {
           setUpdateProductSuccess(false);
           setIsEdit(false);
-          setProductUpdated(productUpdated++);
+          setProductUpdated(productUpdated + 1);
         }, 3000);
       });
   };
@@ -188,10 +177,7 @@ const ProductPage = () => {
 
   const handleReturntoShopping = (e) => {
     e.preventDefault();
-    const oldCart = cart;
-    sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
     navigate(`/`);
-    // navigate(`/`, { state: { oldCart: { cart } } });
   };
 
   const handleOnAddToCart = (e) => {
@@ -219,6 +205,33 @@ const ProductPage = () => {
           })
         : [...cart, product]
     );
+    sessionStorage.setItem(
+      "oldCart",
+      JSON.stringify(
+        cart.find(
+          (cartItem) => Number(cartItem.itemId) === Number(product.itemId)
+        )
+          ? cart.map((cartItem) => {
+              if (Number(cartItem.itemId) === Number(product.itemId)) {
+                return (cartItem = {
+                  category: cartItem.category,
+                  description: cartItem.description,
+                  id: cartItem.id,
+                  itemId: cartItem.itemId,
+                  image: cartItem.image,
+                  price: cartItem.price,
+                  rating: cartItem.rating,
+                  title: cartItem.title,
+                  quantity:
+                    Number(cartItem.quantity) + Number(product.quantity),
+                });
+              } else {
+                return cartItem;
+              }
+            })
+          : [...cart, product]
+      )
+    );
     setProduct({
       category: product.category,
       description: product.description,
@@ -234,6 +247,7 @@ const ProductPage = () => {
 
   const handleEditItem = (e) => {
     e.preventDefault();
+    console.log("Editing");
     setIsEdit(true);
   };
 
@@ -250,7 +264,7 @@ const ProductPage = () => {
 
   return (
     <>
-      <CustomNav cart={cart} />
+      <CustomNav cart={cart} id={id} />
 
       {isLoading ? (
         <div className="loading-div">
@@ -269,8 +283,10 @@ const ProductPage = () => {
           </Modal.Header>
         </Modal>
       ) : isEdit ? (
-        <Modal>
-          <Modal.Header className="newProductTitle">Edit Product:</Modal.Header>
+        <Modal show={true} centered>
+          <Modal.Header className="newProductTitle">
+            <Modal.Title>Edit Product:</Modal.Title>
+          </Modal.Header>
           <Modal.Body>
             <Form onSubmit={handleUpdateProductSubmit}>
               <Form.Group controlId="title">
@@ -352,34 +368,38 @@ const ProductPage = () => {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>*Product Image:</Form.Label>
+                <Form.Label>Product Image:</Form.Label>
                 <Form.Control
                   type="file"
                   name="image"
-                  value={image}
                   onChange={(e) => setImage(e.target.files[0])}
-                  required
                 />
                 <Form.Text className="text-muted">
                   Please select an image to upload.
                 </Form.Text>
               </Form.Group>
               <p style={{ fontSize: "smaller" }}>* = Required Field</p>
-              <div className="createProductButton-div">
-                <Button className="submit-button" type="submit">
-                  Update Product
-                </Button>
-                <Button
-                  className="submit-button"
-                  type="submit"
-                  variant="warning"
-                  onClick={handleCancelEdit}
-                >
-                  Cancel
-                </Button>
-              </div>
             </Form>
           </Modal.Body>
+          <Modal.Footer>
+            <div className="createProductButton-div">
+              <Button
+                className="submit-button"
+                type="submit"
+                onClick={handleUpdateProductSubmit}
+              >
+                Update Product
+              </Button>
+              <Button
+                className="submit-button"
+                type="submit"
+                variant="warning"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </Button>
+            </div>
+          </Modal.Footer>
         </Modal>
       ) : product.itemId && width >= 1040 ? (
         <>
@@ -391,6 +411,14 @@ const ProductPage = () => {
                 onClick={handleEditItem}
               >
                 Edit Item
+              </Button>
+              <Button
+                className="submit-button"
+                type="submit"
+                variant="warning"
+                onClick={handleProductDelete}
+              >
+                Delete Item
               </Button>
             </Row>
           ) : null}
