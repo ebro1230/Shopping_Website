@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,7 @@ const HomePage = () => {
   const [cart, setCart] = useState([]);
   const [userType, setUserType] = useState("");
   const [id, setId] = useState("");
+  const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
   console.log(cart);
 
@@ -174,7 +176,42 @@ const HomePage = () => {
         }
       })
     );
-    //sessionStorage.setItem("oldCart", JSON.stringify(oldCart));
+    const headers = { "Content-Type": "application/json" };
+    const payload = {
+      cart: [
+        items.find((item) => {
+          if (Number(item.id) === Number(itemId)) {
+            return {
+              category: item.category,
+              description: item.description,
+              id: item.id,
+              itemId: item.id,
+              image: item.image,
+              price: item.price,
+              rating: item.rating,
+              title: item.title,
+              quantity: Number(itemQuantity),
+            };
+          }
+        }),
+      ],
+    };
+    if (id) {
+      axios
+        .put(
+          `${process.env.REACT_APP_BACKEND_URL}api/user/${id}/updateCart`,
+          payload,
+          {
+            headers,
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleItemClick = (e) => {
@@ -191,7 +228,13 @@ const HomePage = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     sessionStorage.clear();
+    setUserType("");
     setId("");
+    setCart([]);
+    setLogout(true);
+    setTimeout(() => {
+      setLogout(false);
+    }, 3000);
   };
 
   return (
@@ -202,6 +245,12 @@ const HomePage = () => {
           <div className="loading-div">
             <LoadingIndicator />
           </div>
+        ) : logout ? (
+          <Modal show={true} centered>
+            <Modal.Header>
+              <Modal.Title>Logout Successful</Modal.Title>
+            </Modal.Header>
+          </Modal>
         ) : items.length ? (
           <>
             {userType === "owner" ? (

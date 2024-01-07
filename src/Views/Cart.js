@@ -3,13 +3,13 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { useNavigate } from "react-router-dom";
-
+import { Modal } from "react-bootstrap";
 import CartItem from "../Components/CartItem";
 import LoadingIndicator from "../Components/LoadingIndicator";
 import CustomNav from "../Components/CustomNav";
 import ProceedToCheckOut from "../Components/ProceedToCheckOut";
 import UpdateCartButton from "../Components/UpdateCartButton";
-
+import axios from "axios";
 import useWindowResize from "../useWindowResize";
 
 const Cart = () => {
@@ -21,6 +21,7 @@ const Cart = () => {
   const [quantityChange, setQuantityChange] = useState(false);
   const [id, setId] = useState("");
   const [userType, setUserType] = useState("");
+  const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
 
   const { width, findScreenSize } = useWindowResize();
@@ -181,6 +182,19 @@ const Cart = () => {
     setCart([]);
     setOldCart([]);
     sessionStorage.setItem("oldCart", []);
+    if (id) {
+      const headers = { "Content-Type": "application/json" };
+      axios
+        .put(`${process.env.REACT_APP_BACKEND_URL}api/user/${id}/emptyCart`, {
+          headers,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     setCartPrice(0);
   };
 
@@ -190,14 +204,33 @@ const Cart = () => {
     navigate(`/product/${productId}`);
   };
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    setUserType("");
+    setId("");
+    setCart([]);
+    setCartPrice(0);
+    setLogout(true);
+    setTimeout(() => {
+      setLogout(false);
+    }, 3000);
+  };
+
   return (
     <>
-      <CustomNav cart={cart} id={id} />
+      <CustomNav cart={cart} id={id} onLogout={handleLogout} />
       <div className="items-container">
         {isLoading ? (
           <div className="loading-div">
             <LoadingIndicator />
           </div>
+        ) : logout ? (
+          <Modal show={true} centered>
+            <Modal.Header>
+              <Modal.Title>Logout Successful</Modal.Title>
+            </Modal.Header>
+          </Modal>
         ) : cart.length && width > 1074 ? (
           <>
             <Row>

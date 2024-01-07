@@ -25,6 +25,7 @@ const LoginPage = () => {
   const [incorrectEmail, setIncorrectEmail] = useState(false);
   const [id, setId] = useState("");
   const navigate = useNavigate();
+  console.log(cart);
 
   useEffect(() => {
     if (sessionStorage.getItem("oldCart")) {
@@ -66,11 +67,11 @@ const LoginPage = () => {
             setTimeout(() => {
               setSuccessfulLogin(false);
             }, 3000);
-            sessionStorage.setItem("userId", response.data.response._id);
-            sessionStorage.setItem("userType", response.data.response.userType);
+            sessionStorage.setItem("userId", response.data.newUser._id);
+            sessionStorage.setItem("userType", response.data.newUser.userType);
             sessionStorage.setItem(
               "oldCart",
-              JSON.stringify(response.data.response.cart)
+              JSON.stringify(response.data.newUser.cart)
             );
             navigate(`/`);
           }
