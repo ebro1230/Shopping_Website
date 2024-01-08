@@ -168,6 +168,28 @@ const Cart = () => {
         })
       )
     );
+    const headers = { "Content-Type": "application/json" };
+    const payload = {
+      cart: cart.filter((item) => {
+        return item.quantity > 0;
+      }),
+    };
+    if (id) {
+      axios
+        .put(
+          `${process.env.REACT_APP_BACKEND_URL}api/user/${id}/updateCart2`,
+          payload,
+          {
+            headers,
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     setCartPrice(newCartPrice);
     setQuantityChange(false);
   };

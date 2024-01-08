@@ -7,6 +7,7 @@ import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
+import axios from "axios";
 
 import CartItem from "../Components/CartItem";
 import UpdateCartButton from "../Components/UpdateCartButton";
@@ -49,6 +50,7 @@ const CheckOut = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState("");
   const [id, setId] = useState("");
+  const [logout, setLogout] = useState(false);
 
   const { width, findScreenSize } = useWindowResize();
 
@@ -222,6 +224,19 @@ const CheckOut = () => {
     e.preventDefault();
     setCart([]);
     setOldCart([]);
+    if (id) {
+      const headers = { "Content-Type": "application/json" };
+      axios
+        .put(`${process.env.REACT_APP_BACKEND_URL}api/user/${id}/emptyCart`, {
+          headers,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     sessionStorage.setItem("oldCart", []);
     setCartPrice(0);
   };
@@ -229,13 +244,26 @@ const CheckOut = () => {
   const handlePay = (e) => {
     e.preventDefault();
     setPaymentSuccess(true);
+    setCart([]);
+    if (id) {
+      const headers = { "Content-Type": "application/json" };
+      axios
+        .put(`${process.env.REACT_APP_BACKEND_URL}api/user/${id}/emptyCart`, {
+          headers,
+        })
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    sessionStorage.setItem("oldCart", []);
+    setCartPrice(0);
     setTimeout(() => {
       setPaymentSuccess(false);
       navigate("/");
     }, 3000);
-    setCart([]);
-    sessionStorage.setItem("oldCart", []);
-    setCartPrice(0);
   };
 
   const handleUpdate = (e) => {
@@ -258,6 +286,28 @@ const CheckOut = () => {
         })
       )
     );
+    const headers = { "Content-Type": "application/json" };
+    const payload = {
+      cart: cart.filter((item) => {
+        return item.quantity > 0;
+      }),
+    };
+    if (id) {
+      axios
+        .put(
+          `${process.env.REACT_APP_BACKEND_URL}api/user/${id}/updateCart2`,
+          payload,
+          {
+            headers,
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     setCartPrice(newCartPrice);
     setQuantityChange(false);
   };
@@ -268,14 +318,32 @@ const CheckOut = () => {
     navigate(`/product/${productId}`);
   };
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    setUserType("");
+    setId("");
+    setCart([]);
+    setLogout(true);
+    setTimeout(() => {
+      setLogout(false);
+    }, 3000);
+  };
+
   return (
     <>
-      <CustomNav cart={cart} id={id} />
+      <CustomNav cart={cart} id={id} onLogout={handleLogout} />
 
       {paymentSuccess ? (
         <Modal show={true} centered>
           <Modal.Header>
             <Modal.Title>Payment Successful!</Modal.Title>
+          </Modal.Header>
+        </Modal>
+      ) : logout ? (
+        <Modal show={true} centered>
+          <Modal.Header>
+            <Modal.Title>Logout Successful</Modal.Title>
           </Modal.Header>
         </Modal>
       ) : cart.length && width > 1073 ? (

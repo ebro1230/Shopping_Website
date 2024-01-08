@@ -13,8 +13,8 @@ code {
 }
 
 .items-container {
-  margin: 60px;
-  padding: 15px;
+  margin: 1rem;
+  padding: 0px 15px 0px 15px;
 }
 
 .card-img-top{
@@ -180,6 +180,14 @@ code {
   flex-direction: row !important;
   justify-content: center;
   }
+  .editItemButton-div {
+    display:flex;
+    justify-content: center;
+    margin: 1rem auto 1rem auto !important;
+  }
+  .deleteItemButton{
+    margin: auto 0rem auto 0rem !important;
+  }
 }
 @media (max-width: 499px) {
   .productCartButtons-div{
@@ -194,6 +202,17 @@ code {
   display:flex;
   flex-direction: column !important;
   justify-content: center;
+  }
+  .editItemButton-div {
+    display:flex;
+    justify-content: center;
+    margin: 1rem auto 1rem auto !important;
+  }
+  .deleteItemButton{
+    margin: auto 0rem auto 0rem !important;
+  }
+  .editItemButton{
+    margin: auto 0rem auto 0rem !important;
   }
 }
 .productCartButtons-div{
@@ -250,10 +269,10 @@ code {
   display: flex;
 }
 .product-div{
-  margin: 1rem 0.5rem 1rem 1rem;
+  margin: 0rem 0.5rem 1rem 1rem;
 }
 .productCart-div{
-  margin: 1rem 1rem 1rem 0.5rem;
+  margin: 0rem 1rem 1rem 0.5rem;
 }
 .addToCheckOut-div{
   width:100%;
@@ -320,4 +339,26 @@ code {
 .addItemButton-div {
   display:flex;
   justify-content: end;
+  align-content: flex-start;
+  padding: 0px 15px 0px 15px;
+}
+
+.addItemButton {
+  max-width: 13rem;
+  margin-bottom: 1rem;
+}
+
+.editItemButton-div {
+  margin: 1rem auto 1rem 1rem;
+}
+.editItemButton{
+  max-width: 13rem;
+  margin: auto 0.5rem auto 0rem;
+}
+.deleteItemButton{
+  max-width: 13rem;
+  margin: auto 0rem auto 0.5rem;
+}
+.updateProductButton{
+  margin-right: 0.5rem;
 }

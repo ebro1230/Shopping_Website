@@ -176,27 +176,27 @@ const HomePage = () => {
         }
       })
     );
-    const headers = { "Content-Type": "application/json" };
-    const payload = {
-      cart: [
-        items.find((item) => {
-          if (Number(item.id) === Number(itemId)) {
-            return {
-              category: item.category,
-              description: item.description,
-              id: item.id,
-              itemId: item.id,
-              image: item.image,
-              price: item.price,
-              rating: item.rating,
-              title: item.title,
-              quantity: Number(itemQuantity),
-            };
-          }
-        }),
-      ],
-    };
     if (id) {
+      const headers = { "Content-Type": "application/json" };
+      const payload = {
+        cart: [
+          items.find((item) => {
+            if (Number(item.id) === Number(itemId)) {
+              return {
+                category: item.category,
+                description: item.description,
+                id: item.id,
+                itemId: item.id,
+                image: item.image,
+                price: item.price,
+                rating: item.rating,
+                title: item.title,
+                quantity: Number(itemQuantity),
+              };
+            }
+          }),
+        ],
+      };
       axios
         .put(
           `${process.env.REACT_APP_BACKEND_URL}api/user/${id}/updateCart`,

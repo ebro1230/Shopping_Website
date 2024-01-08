@@ -26,6 +26,7 @@ const ProductPage = () => {
 
   const numberValidation = /^[0-9]+$/;
   const priceValidation = /^\$[0-9]*(\.[0-9]{0,2})?$/;
+  const ratingValidation = /^(?:5(?:\.0)?|[0-4](?:\.[0-9])?)$/;
   const [isEdit, setIsEdit] = useState(false);
   const [title, setTitle] = useState([]);
   const [category, setCategory] = useState([]);
@@ -36,6 +37,7 @@ const ProductPage = () => {
   const [updateProductSuccess, setUpdateProductSuccess] = useState(false);
   const [productUpdated, setProductUpdated] = useState(0);
   const [productDeleteSuccess, setProductDeletedSuccess] = useState(false);
+  const [logout, setLogout] = useState(false);
 
   console.log(image);
   useEffect(() => {
@@ -113,7 +115,7 @@ const ProductPage = () => {
     formData.append("category", category);
     formData.append("description", description);
     formData.append("price", Number(price.substring(1)).toFixed(2));
-    formData.append("rating", Number(rating));
+    formData.append("rating", Number(rating).toFixed(1));
     formData.append("image", image);
     axios
       .put(
@@ -232,6 +234,47 @@ const ProductPage = () => {
           : [...cart, product]
       )
     );
+    if (id) {
+      const headers = { "Content-Type": "application/json" };
+      const payload = {
+        cart: cart.find(
+          (cartItem) => Number(cartItem.itemId) === Number(product.itemId)
+        )
+          ? cart.map((cartItem) => {
+              if (Number(cartItem.itemId) === Number(product.itemId)) {
+                return (cartItem = {
+                  category: cartItem.category,
+                  description: cartItem.description,
+                  id: cartItem.id,
+                  itemId: cartItem.itemId,
+                  image: cartItem.image,
+                  price: cartItem.price,
+                  rating: cartItem.rating,
+                  title: cartItem.title,
+                  quantity:
+                    Number(cartItem.quantity) + Number(product.quantity),
+                });
+              } else {
+                return cartItem;
+              }
+            })
+          : [...cart, product],
+      };
+      axios
+        .put(
+          `${process.env.REACT_APP_BACKEND_URL}api/user/${id}/updateCart`,
+          payload,
+          {
+            headers,
+          }
+        )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
     setProduct({
       category: product.category,
       description: product.description,
@@ -262,9 +305,21 @@ const ProductPage = () => {
     setImage(product.image);
   };
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    setUserType("");
+    setId("");
+    setCart([]);
+    setLogout(true);
+    setTimeout(() => {
+      setLogout(false);
+    }, 3000);
+  };
+
   return (
     <>
-      <CustomNav cart={cart} id={id} />
+      <CustomNav cart={cart} id={id} onLogout={handleLogout} />
 
       {isLoading ? (
         <div className="loading-div">
@@ -280,6 +335,12 @@ const ProductPage = () => {
         <Modal show={true} centered>
           <Modal.Header>
             <Modal.Title>Product Deleted Successfully</Modal.Title>
+          </Modal.Header>
+        </Modal>
+      ) : logout ? (
+        <Modal show={true} centered>
+          <Modal.Header>
+            <Modal.Title>Logout Successful</Modal.Title>
           </Modal.Header>
         </Modal>
       ) : isEdit ? (
@@ -312,7 +373,8 @@ const ProductPage = () => {
               <Form.Group>
                 <Form.Label>*Description:</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="textarea"
+                  rows={3}
                   name="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -348,16 +410,16 @@ const ProductPage = () => {
                 <Form.Label>*Rating:</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="0-5"
+                  placeholder="0.0-5.0"
                   name="rating"
                   value={rating}
                   onChange={(e) => {
                     if (
-                      numberValidation.test(e.target.value) ||
+                      ratingValidation.test(e.target.value) ||
                       e.target.value === ""
                     ) {
                       if (e.target.value >= 0 && e.target.value <= 5) {
-                        setRating(e.target.value.slice(0, 1));
+                        setRating(e.target.value);
                       }
                       if (Number(e.target.value) === "") {
                         setRating("");
@@ -384,7 +446,7 @@ const ProductPage = () => {
           <Modal.Footer>
             <div className="createProductButton-div">
               <Button
-                className="submit-button"
+                className="updateProductButton"
                 type="submit"
                 onClick={handleUpdateProductSubmit}
               >
@@ -413,7 +475,7 @@ const ProductPage = () => {
                 Edit Item
               </Button>
               <Button
-                className="submit-button"
+                className="deleteItemButton"
                 type="submit"
                 variant="warning"
                 onClick={handleProductDelete}
@@ -447,6 +509,14 @@ const ProductPage = () => {
                 onClick={handleEditItem}
               >
                 Edit Item
+              </Button>
+              <Button
+                className="deleteItemButton"
+                type="submit"
+                variant="warning"
+                onClick={handleProductDelete}
+              >
+                Delete Item
               </Button>
             </Row>
           ) : null}
