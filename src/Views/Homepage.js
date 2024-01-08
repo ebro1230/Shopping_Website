@@ -18,7 +18,6 @@ const HomePage = () => {
   const [id, setId] = useState("");
   const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
-  console.log(cart);
 
   useEffect(() => {
     setIsLoading(true);
