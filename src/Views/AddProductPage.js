@@ -9,6 +9,8 @@ const AddProductPage = () => {
   const navigate = useNavigate();
   const numberValidation = /^[0-9]+$/;
   const priceValidation = /^\$[0-9]*(\.[0-9]{0,2})?$/;
+  const ratingValidation = /^(?:[0-4](?:\.\d)?|5(?:\.0)?)$/;
+  const ratingValidation2 = /^([0-5])(\.?)$/;
   const [title, setTitle] = useState([]);
   const [category, setCategory] = useState([]);
   const [description, setDescription] = useState([]);
@@ -108,7 +110,8 @@ const AddProductPage = () => {
               <Form.Group>
                 <Form.Label>*Description:</Form.Label>
                 <Form.Control
-                  type="text"
+                  as="textarea"
+                  rows={3}
                   name="description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
@@ -144,19 +147,19 @@ const AddProductPage = () => {
                 <Form.Label>*Rating:</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="0-5"
+                  placeholder="0.0-5.0"
                   name="rating"
                   value={rating}
                   onChange={(e) => {
                     if (
-                      numberValidation.test(e.target.value) ||
+                      ratingValidation.test(e.target.value) ||
+                      ratingValidation2.test(e.target.value) ||
                       e.target.value === ""
                     ) {
-                      if (e.target.value >= 0 && e.target.value <= 5) {
-                        setRating(e.target.value.slice(0, 1));
-                      }
                       if (Number(e.target.value) === "") {
                         setRating("");
+                      } else {
+                        setRating(e.target.value);
                       }
                     }
                   }}

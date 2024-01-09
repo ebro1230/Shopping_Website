@@ -26,7 +26,8 @@ const ProductPage = () => {
 
   const numberValidation = /^[0-9]+$/;
   const priceValidation = /^\$[0-9]*(\.[0-9]{0,2})?$/;
-  const ratingValidation = /^(?:5(?:\.0)?|[0-4](?:\.[0-9])?)$/;
+  const ratingValidation = /^(?:[0-4](?:\.\d)?|5(?:\.0)?)$/;
+  const ratingValidation2 = /^([0-5])(\.?)$/;
   const [isEdit, setIsEdit] = useState(false);
   const [title, setTitle] = useState([]);
   const [category, setCategory] = useState([]);
@@ -53,20 +54,20 @@ const ProductPage = () => {
     }
     findScreenSize();
     axios
-      .get(`https://fakestoreapi.com/products/${productId}`)
-      //.get(`${process.env.REACT_APP_BACKEND_URL}api/product/${productId}`)
+      //.get(`https://fakestoreapi.com/products/${productId}`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}api/product/${productId}`)
       .then((response) => {
         console.log(response);
         setProduct({
           category: response.data.category,
           description: response.data.description,
           id: response.data._id,
-          //itemId: response.data._id,
-          itemId: response.data.id,
+          itemId: response.data._id,
+          //itemId: response.data.id,
           image: response.data.image,
           price: response.data.price.toFixed(2),
-          //rating: Number(response.data.rating),
-          rating: Number(response.data.rating.rate),
+          rating: Number(response.data.rating),
+          //rating: Number(response.data.rating.rate),
           title: response.data.title,
           quantity: 0,
         });
@@ -74,8 +75,8 @@ const ProductPage = () => {
         setCategory(response.data.category);
         setDescription(response.data.description);
         setPrice("$" + response.data.price);
-        //setRating(response.data.rating);
-        setRating(response.data.rating.rate);
+        setRating(response.data.rating);
+        //setRating(response.data.rating.rate);
         setImage(response.data.image);
       })
       .catch((error) => {
@@ -416,13 +417,13 @@ const ProductPage = () => {
                   onChange={(e) => {
                     if (
                       ratingValidation.test(e.target.value) ||
+                      ratingValidation2.test(e.target.value) ||
                       e.target.value === ""
                     ) {
-                      if (e.target.value >= 0 && e.target.value <= 5) {
-                        setRating(e.target.value);
-                      }
                       if (Number(e.target.value) === "") {
                         setRating("");
+                      } else {
+                        setRating(e.target.value);
                       }
                     }
                   }}

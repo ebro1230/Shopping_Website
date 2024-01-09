@@ -12,6 +12,7 @@ import { faStar as faStarE } from "@fortawesome/free-regular-svg-icons";
 const ProductPage = (props) => {
   const [product, setProduct] = useState(props.product);
   const width = props.width;
+  console.log(`Product Image: ${product.image}`);
 
   return (
     <>

@@ -18,6 +18,7 @@ const HomePage = () => {
   const [id, setId] = useState("");
   const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
+  console.log(items[0]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,15 +32,17 @@ const HomePage = () => {
       setId(sessionStorage.getItem("userId"));
     }
     axios
-      .get(`https://fakestoreapi.com/products`)
+      //.get(`https://fakestoreapi.com/products`)
+      .get(`${process.env.REACT_APP_BACKEND_URL}api/product/`)
       .then((response) => {
         setItems(
           response.data.map((item) => {
+            console.log(item._id);
             return (item = {
               category: item.category,
               description: item.description,
-              id: item.id,
-              itemId: item.id,
+              id: item._id,
+              itemId: item._id,
               image: item.image,
               price: item.price.toFixed(2),
               rating: item.rating,
@@ -215,7 +218,7 @@ const HomePage = () => {
 
   const handleItemClick = (e) => {
     e.preventDefault();
-    const productId = Number(e.target.getAttribute("data-itemid"));
+    const productId = e.target.getAttribute("data-itemid");
     navigate(`/product/${productId}`);
   };
 
@@ -275,7 +278,7 @@ const HomePage = () => {
                   <Item
                     cardImage={item.image}
                     cardTitle={item.title}
-                    cardRating={item.rating.rate}
+                    cardRating={item.rating}
                     cardPrice={item.price}
                     cardText={item.description}
                     cardQuantity={item.quantity}
