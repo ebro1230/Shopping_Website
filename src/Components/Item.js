@@ -17,7 +17,6 @@ const Item = (props) => {
   const cardQuantity = props.cardQuantity;
   const cardItemId = props.cardItemId;
   const totalPrice = (cardQuantity * cardPrice).toFixed(2);
-  console.log(`Card Item ID: ${cardItemId}`);
   return (
     <Card key={cardItemId}>
       <Card.Img

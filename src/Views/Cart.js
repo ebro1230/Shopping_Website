@@ -56,12 +56,12 @@ const Cart = () => {
     let difference = [];
     const increaseId = e.target.id;
     oldCart.forEach((oldItem) => {
-      if (Number(oldItem.itemId) === Number(increaseId)) {
+      if (oldItem.itemId === increaseId) {
         price = Number(price) + Number(oldItem.price);
       }
     });
     for (let i = 0; i < cart.length; i++) {
-      if (Number(cart[i].itemId) === Number(increaseId)) {
+      if (cart[i].itemId === increaseId) {
         if (Number(cart[i].quantity + 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
@@ -76,7 +76,7 @@ const Cart = () => {
     setNewCartPrice(price);
     setCart(
       cart.map((item) => {
-        if (Number(item.itemId) === Number(increaseId)) {
+        if (item.itemId === increaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -101,7 +101,7 @@ const Cart = () => {
     let difference = [];
     let price = newCartPrice;
     oldCart.forEach((oldItem) => {
-      if (Number(oldItem.itemId) === Number(decreaseId)) {
+      if (oldItem.itemId === decreaseId) {
         if (
           cart.find((item) => item.itemId === oldItem.itemId).quantity !== 0
         ) {
@@ -110,7 +110,7 @@ const Cart = () => {
       }
     });
     for (let i = 0; i < cart.length; i++) {
-      if (Number(cart[i].itemId) === Number(decreaseId)) {
+      if (cart[i].itemId === decreaseId) {
         if (Number(cart[i].quantity - 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
@@ -124,7 +124,7 @@ const Cart = () => {
     setNewCartPrice(Number(price));
     setCart(
       cart.map((item) => {
-        if (Number(item.itemId) === Number(decreaseId)) {
+        if (item.itemId === decreaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -222,7 +222,7 @@ const Cart = () => {
 
   const handleItemClick = (e) => {
     e.preventDefault();
-    const productId = Number(e.target.getAttribute("data-itemid"));
+    const productId = e.target.getAttribute("data-itemid");
     navigate(`/product/${productId}`);
   };
 

@@ -29,15 +29,18 @@ const Category = () => {
       setId(sessionStorage.getItem("userId"));
     }
     axios
-      .get(`https://fakestoreapi.com/products/category/${category}`)
+      //.get(`https://fakestoreapi.com/products/category/${category}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_URL}api/product/categories/${category}`
+      )
       .then((response) => {
         setItems(
           response.data.map((item) => {
             return (item = {
               category: item.category,
               description: item.description,
-              id: item.id,
-              itemId: item.id,
+              id: item._id,
+              itemId: item._id,
               image: item.image,
               price: item.price.toFixed(2),
               rating: item.rating,
@@ -60,7 +63,7 @@ const Category = () => {
     const increaseId = e.target.id;
     setItems(
       items.map((item) => {
-        if (Number(item.id) === Number(increaseId)) {
+        if (item.id === increaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -84,7 +87,7 @@ const Category = () => {
     const decreaseId = e.target.id;
     setItems(
       items.map((item) => {
-        if (Number(item.id) === Number(decreaseId)) {
+        if (item.id === decreaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -109,11 +112,11 @@ const Category = () => {
     const itemQuantity = Number(e.target.getAttribute("data-quantity"));
     setItems(
       items.map((item) => {
-        if (Number(item.id) === Number(itemId)) {
+        if (item.id === itemId) {
           setCart(
             cart.find((cartItem) => cartItem.id === item.id)
               ? cart.map((cartItem) => {
-                  if (Number(cartItem.id) === Number(item.id)) {
+                  if (cartItem.id === item.id) {
                     return (cartItem = {
                       category: cartItem.category,
                       description: cartItem.description,
@@ -137,7 +140,7 @@ const Category = () => {
             JSON.stringify(
               cart.find((cartItem) => cartItem.id === item.id)
                 ? cart.map((cartItem) => {
-                    if (Number(cartItem.id) === Number(item.id)) {
+                    if (cartItem.id === item.id) {
                       return (cartItem = {
                         category: cartItem.category,
                         description: cartItem.description,
@@ -177,7 +180,7 @@ const Category = () => {
 
   const handleItemClick = (e) => {
     e.preventDefault();
-    const productId = Number(e.target.getAttribute("data-itemid"));
+    const productId = e.target.getAttribute("data-itemid");
     navigate(`/product/${productId}`);
   };
 
@@ -196,7 +199,7 @@ const Category = () => {
                 <Item
                   cardImage={item.image}
                   cardTitle={item.title}
-                  cardRating={item.rating.rate}
+                  cardRating={item.rating}
                   cardPrice={item.price}
                   cardText={item.description}
                   cardQuantity={item.quantity}

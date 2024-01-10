@@ -40,7 +40,6 @@ const ProductPage = () => {
   const [productDeleteSuccess, setProductDeletedSuccess] = useState(false);
   const [logout, setLogout] = useState(false);
 
-  console.log(image);
   useEffect(() => {
     setIsLoading(true);
     if (sessionStorage.getItem("oldCart")) {
@@ -57,7 +56,6 @@ const ProductPage = () => {
       //.get(`https://fakestoreapi.com/products/${productId}`)
       .get(`${process.env.REACT_APP_BACKEND_URL}api/product/${productId}`)
       .then((response) => {
-        console.log(response);
         setProduct({
           category: response.data.category,
           description: response.data.description,
@@ -186,11 +184,9 @@ const ProductPage = () => {
   const handleOnAddToCart = (e) => {
     e.preventDefault();
     setCart(
-      cart.find(
-        (cartItem) => Number(cartItem.itemId) === Number(product.itemId)
-      )
+      cart.find((cartItem) => cartItem.itemId === product.itemId)
         ? cart.map((cartItem) => {
-            if (Number(cartItem.itemId) === Number(product.itemId)) {
+            if (cartItem.itemId === product.itemId) {
               return (cartItem = {
                 category: cartItem.category,
                 description: cartItem.description,
@@ -211,11 +207,9 @@ const ProductPage = () => {
     sessionStorage.setItem(
       "oldCart",
       JSON.stringify(
-        cart.find(
-          (cartItem) => Number(cartItem.itemId) === Number(product.itemId)
-        )
+        cart.find((cartItem) => cartItem.itemId === product.itemId)
           ? cart.map((cartItem) => {
-              if (Number(cartItem.itemId) === Number(product.itemId)) {
+              if (cartItem.itemId === product.itemId) {
                 return (cartItem = {
                   category: cartItem.category,
                   description: cartItem.description,
@@ -238,11 +232,9 @@ const ProductPage = () => {
     if (id) {
       const headers = { "Content-Type": "application/json" };
       const payload = {
-        cart: cart.find(
-          (cartItem) => Number(cartItem.itemId) === Number(product.itemId)
-        )
+        cart: cart.find((cartItem) => cartItem.itemId === product.itemId)
           ? cart.map((cartItem) => {
-              if (Number(cartItem.itemId) === Number(product.itemId)) {
+              if (cartItem.itemId === product.itemId) {
                 return (cartItem = {
                   category: cartItem.category,
                   description: cartItem.description,
@@ -291,7 +283,6 @@ const ProductPage = () => {
 
   const handleEditItem = (e) => {
     e.preventDefault();
-    console.log("Editing");
     setIsEdit(true);
   };
 

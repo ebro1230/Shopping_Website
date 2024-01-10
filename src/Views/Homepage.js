@@ -18,7 +18,6 @@ const HomePage = () => {
   const [id, setId] = useState("");
   const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
-  console.log(items[0]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -37,7 +36,6 @@ const HomePage = () => {
       .then((response) => {
         setItems(
           response.data.map((item) => {
-            console.log(item._id);
             return (item = {
               category: item.category,
               description: item.description,
@@ -65,7 +63,7 @@ const HomePage = () => {
     const increaseId = e.target.id;
     setItems(
       items.map((item) => {
-        if (Number(item.id) === Number(increaseId)) {
+        if (item.id === increaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -89,7 +87,7 @@ const HomePage = () => {
     const decreaseId = e.target.id;
     setItems(
       items.map((item) => {
-        if (Number(item.id) === Number(decreaseId)) {
+        if (item.id === decreaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -114,11 +112,11 @@ const HomePage = () => {
     const itemQuantity = Number(e.target.getAttribute("data-quantity"));
     setItems(
       items.map((item) => {
-        if (Number(item.id) === Number(itemId)) {
+        if (item.id === itemId) {
           setCart(
             cart.find((cartItem) => cartItem.id === item.id)
               ? cart.map((cartItem) => {
-                  if (Number(cartItem.id) === Number(item.id)) {
+                  if (cartItem.id === item.id) {
                     return (cartItem = {
                       category: cartItem.category,
                       description: cartItem.description,
@@ -142,7 +140,7 @@ const HomePage = () => {
             JSON.stringify(
               cart.find((cartItem) => cartItem.id === item.id)
                 ? cart.map((cartItem) => {
-                    if (Number(cartItem.id) === Number(item.id)) {
+                    if (cartItem.id === item.id) {
                       return (cartItem = {
                         category: cartItem.category,
                         description: cartItem.description,
@@ -183,7 +181,7 @@ const HomePage = () => {
       const payload = {
         cart: [
           items.find((item) => {
-            if (Number(item.id) === Number(itemId)) {
+            if (item.id === itemId) {
               return {
                 category: item.category,
                 description: item.description,

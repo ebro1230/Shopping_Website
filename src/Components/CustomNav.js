@@ -19,7 +19,7 @@ function CustomNav(props) {
     <>
       <Navbar
         key="md"
-        expand="md"
+        expand="lg"
         className="bg-body-tertiary mb-3"
         data-bs-theme="dark"
       >
@@ -27,14 +27,14 @@ function CustomNav(props) {
           <LinkContainer to="/">
             <Navbar.Brand>Generic Store</Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-md`} />
+          <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-lg`} />
           <Navbar.Offcanvas
-            id={`offcanvasNavbar-expand-md`}
-            aria-labelledby={`offcanvasNavbarLabel-expand-md`}
+            id={`offcanvasNavbar-expand-lg`}
+            aria-labelledby={`offcanvasNavbarLabel-expand-lg`}
             placement="end"
           >
             <Offcanvas.Header closeButton>
-              <Offcanvas.Title id={`offcanvasNavbarLabel-expand-md`}>
+              <Offcanvas.Title id={`offcanvasNavbarLabel-expand-lg`}>
                 Generic Store
               </Offcanvas.Title>
             </Offcanvas.Header>
@@ -43,18 +43,22 @@ function CustomNav(props) {
                 <LinkContainer to="/">
                   <Nav.Link className="navItem">Home</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/category/electronics">
-                  <Nav.Link className="navItem">Electronics</Nav.Link>
+                <LinkContainer to="/category/Books">
+                  <Nav.Link className="navItem">Books</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/category/jewelery">
-                  <Nav.Link className="navItem">Jewelery</Nav.Link>
-                </LinkContainer>
-                <LinkContainer to="/category/men's clothing">
+                <LinkContainer to="/category/Men's Clothing">
                   <Nav.Link className="navItem">Men's Clothing</Nav.Link>
                 </LinkContainer>
-                <LinkContainer to="/category/women's clothing">
+                <LinkContainer to="/category/Women's Clothing">
                   <Nav.Link className="navItem">Women's Clothing</Nav.Link>
                 </LinkContainer>
+                <LinkContainer to="/category/Electronics">
+                  <Nav.Link className="navItem">Electronics</Nav.Link>
+                </LinkContainer>
+                <LinkContainer to="/category/Jewelry">
+                  <Nav.Link className="navItem">Jewelry</Nav.Link>
+                </LinkContainer>
+
                 <LinkContainer to="/cart">
                   <Nav.Link className="shoppingCart-div">
                     <Image src={shopping_cart} roundedCircle fluid />

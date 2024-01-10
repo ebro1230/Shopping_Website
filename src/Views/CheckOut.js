@@ -84,12 +84,12 @@ const CheckOut = () => {
     let difference = [];
     const increaseId = e.target.id;
     oldCart.forEach((oldItem) => {
-      if (Number(oldItem.itemId) === Number(increaseId)) {
+      if (oldItem.itemId === increaseId) {
         price = Number(price) + Number(oldItem.price);
       }
     });
     for (let i = 0; i < cart.length; i++) {
-      if (Number(cart[i].itemId) === Number(increaseId)) {
+      if (cart[i].itemId === increaseId) {
         if (Number(cart[i].quantity + 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
@@ -104,7 +104,7 @@ const CheckOut = () => {
     setNewCartPrice(price);
     setCart(
       cart.map((item) => {
-        if (Number(item.itemId) === Number(increaseId)) {
+        if (item.itemId === increaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -125,7 +125,7 @@ const CheckOut = () => {
       "oldCart",
       JSON.stringify(
         cart.map((item) => {
-          if (Number(item.itemId) === Number(increaseId)) {
+          if (item.itemId === increaseId) {
             return (item = {
               category: item.category,
               description: item.description,
@@ -151,7 +151,7 @@ const CheckOut = () => {
     let difference = [];
     let price = newCartPrice;
     oldCart.forEach((oldItem) => {
-      if (Number(oldItem.itemId) === Number(decreaseId)) {
+      if (oldItem.itemId === decreaseId) {
         if (
           cart.find((item) => item.itemId === oldItem.itemId).quantity !== 0
         ) {
@@ -160,7 +160,7 @@ const CheckOut = () => {
       }
     });
     for (let i = 0; i < cart.length; i++) {
-      if (Number(cart[i].itemId) === Number(decreaseId)) {
+      if (cart[i].itemId === decreaseId) {
         if (Number(cart[i].quantity - 1) !== Number(oldCart[i].quantity)) {
           difference = [difference, true];
         }
@@ -174,7 +174,7 @@ const CheckOut = () => {
     setNewCartPrice(Number(price));
     setCart(
       cart.map((item) => {
-        if (Number(item.itemId) === Number(decreaseId)) {
+        if (item.itemId === decreaseId) {
           return (item = {
             category: item.category,
             description: item.description,
@@ -195,7 +195,7 @@ const CheckOut = () => {
       "oldCart",
       JSON.stringify(
         cart.map((item) => {
-          if (Number(item.itemId) === Number(decreaseId)) {
+          if (item.itemId === decreaseId) {
             return (item = {
               category: item.category,
               description: item.description,
@@ -314,7 +314,7 @@ const CheckOut = () => {
 
   const handleItemClick = (e) => {
     e.preventDefault();
-    const productId = Number(e.target.getAttribute("data-itemid"));
+    const productId = e.target.getAttribute("data-itemid");
     navigate(`/product/${productId}`);
   };
 
@@ -795,7 +795,7 @@ const CheckOut = () => {
                                       <CartItem
                                         cardImage={item.image}
                                         cardTitle={item.title}
-                                        cardRating={item.rating.rate}
+                                        cardRating={item.rating}
                                         cardPrice={item.price}
                                         cardText={item.description}
                                         cardQuantity={item.quantity}
@@ -1410,7 +1410,7 @@ const CheckOut = () => {
                                     <CartItem
                                       cardImage={item.image}
                                       cardTitle={item.title}
-                                      cardRating={item.rating.rate}
+                                      cardRating={item.rating}
                                       cardPrice={item.price}
                                       cardText={item.description}
                                       cardQuantity={item.quantity}

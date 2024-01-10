@@ -362,3 +362,14 @@ code {
 .updateProductButton{
   margin-right: 0.5rem;
 }
+.offcanvas-header{
+  background-color: #2b3035;
+  color: #e7e7e8;
+}
+.offcanvas-body{
+  background-color: #2b3035;
+  color: #e7e7e8;
+}
+.btn-close{
+  background-color: #e7e7e8;
+}
