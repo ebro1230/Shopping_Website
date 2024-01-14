@@ -74,10 +74,10 @@ const LoginPage = () => {
                 "oldCart",
                 JSON.stringify(response.data.newUser.cart)
               );
+              setId(response.data.newUser_id);
               setSuccessfulLogin(false);
+              navigate(`/`);
             }, 3000);
-
-            navigate(`/`);
           }
         })
         .catch((error) => {
@@ -143,6 +143,7 @@ const LoginPage = () => {
                       "oldCart",
                       JSON.stringify(response.data.cart)
                     );
+                    setId(response.data._id);
                   });
               })
               .catch((error) => {
