@@ -65,14 +65,18 @@ const LoginPage = () => {
           } else {
             setSuccessfulLogin(true);
             setTimeout(() => {
+              sessionStorage.setItem("userId", response.data.newUser._id);
+              sessionStorage.setItem(
+                "userType",
+                response.data.newUser.userType
+              );
+              sessionStorage.setItem(
+                "oldCart",
+                JSON.stringify(response.data.newUser.cart)
+              );
               setSuccessfulLogin(false);
             }, 3000);
-            sessionStorage.setItem("userId", response.data.newUser._id);
-            sessionStorage.setItem("userType", response.data.newUser.userType);
-            sessionStorage.setItem(
-              "oldCart",
-              JSON.stringify(response.data.newUser.cart)
-            );
+
             navigate(`/`);
           }
         })
@@ -139,7 +143,7 @@ const LoginPage = () => {
                       "oldCart",
                       JSON.stringify(response.data.cart)
                     );
-                  }, 3000);
+                  });
               })
               .catch((error) => {
                 console.log(error);
@@ -151,7 +155,7 @@ const LoginPage = () => {
                   setPassword("");
                   setPasswordConfirm("");
                   navigate(`/`);
-                });
+                }, 3000);
               })
               .catch((error) => {
                 console.log(error);
